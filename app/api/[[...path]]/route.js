@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb'
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 // MongoDB connection
 let client
@@ -24,6 +26,21 @@ function handleCORS(response) {
   return response
 }
 
+// Verify JWT token
+function verifyToken(request) {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  
+  const token = authHeader.substring(7)
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET)
+  } catch (error) {
+    return null
+  }
+}
+
 // OPTIONS handler for CORS
 export async function OPTIONS() {
   return handleCORS(new NextResponse(null, { status: 200 }))
@@ -38,59 +55,361 @@ async function handleRoute(request, { params }) {
   try {
     const db = await connectToMongo()
 
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
-    }
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
+    // Root endpoint
     if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
+      return handleCORS(NextResponse.json({ message: "SIR CBSE API" }))
     }
 
-    // Status endpoints - POST /api/status
-    if (route === '/status' && method === 'POST') {
+    // ============ AUTH ROUTES ============
+    
+    // Register - POST /api/auth/register
+    if (route === '/auth/register' && method === 'POST') {
       const body = await request.json()
-      
-      if (!body.client_name) {
+      const { name, email, password, role = 'student' } = body
+
+      if (!name || !email || !password) {
         return handleCORS(NextResponse.json(
-          { error: "client_name is required" }, 
+          { error: "Name, email and password are required" },
           { status: 400 }
         ))
       }
 
-      const statusObj = {
-        id: uuidv4(),
-        client_name: body.client_name,
-        timestamp: new Date()
+      // Check if user already exists
+      const existingUser = await db.collection('users').findOne({ email })
+      if (existingUser) {
+        return handleCORS(NextResponse.json(
+          { error: "User already exists" },
+          { status: 400 }
+        ))
       }
 
-      await db.collection('status_checks').insertOne(statusObj)
-      return handleCORS(NextResponse.json(statusObj))
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10)
+
+      // Create user
+      const user = {
+        id: uuidv4(),
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        createdAt: new Date(),
+        subscriptionStatus: 'active'
+      }
+
+      await db.collection('users').insertOne(user)
+
+      // Generate token
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      )
+
+      const { password: _, ...userWithoutPassword } = user
+      return handleCORS(NextResponse.json({ user: userWithoutPassword, token }))
     }
 
-    // Status endpoints - GET /api/status
-    if (route === '/status' && method === 'GET') {
-      const statusChecks = await db.collection('status_checks')
-        .find({})
-        .limit(1000)
-        .toArray()
+    // Login - POST /api/auth/login
+    if (route === '/auth/login' && method === 'POST') {
+      const body = await request.json()
+      const { email, password } = body
 
-      // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
+      if (!email || !password) {
+        return handleCORS(NextResponse.json(
+          { error: "Email and password are required" },
+          { status: 400 }
+        ))
+      }
+
+      // Find user
+      const user = await db.collection('users').findOne({ email })
+      if (!user) {
+        return handleCORS(NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        ))
+      }
+
+      // Verify password
+      const isValid = await bcrypt.compare(password, user.password)
+      if (!isValid) {
+        return handleCORS(NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        ))
+      }
+
+      // Generate token
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      )
+
+      const { password: _, ...userWithoutPassword } = user
+      return handleCORS(NextResponse.json({ user: userWithoutPassword, token }))
+    }
+
+    // Get current user - GET /api/auth/me
+    if (route === '/auth/me' && method === 'GET') {
+      const userData = verifyToken(request)
+      if (!userData) {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        ))
+      }
+
+      const user = await db.collection('users').findOne({ id: userData.userId })
+      if (!user) {
+        return handleCORS(NextResponse.json(
+          { error: "User not found" },
+          { status: 404 }
+        ))
+      }
+
+      const { password: _, ...userWithoutPassword } = user
+      return handleCORS(NextResponse.json(userWithoutPassword))
+    }
+
+    // ============ SUBJECTS ROUTES ============
+    
+    // Get all subjects - GET /api/subjects
+    if (route === '/subjects' && method === 'GET') {
+      const subjects = await db.collection('subjects').find({}).toArray()
+      const cleanedSubjects = subjects.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedSubjects))
+    }
+
+    // Create subject - POST /api/subjects (Admin only)
+    if (route === '/subjects' && method === 'POST') {
+      const userData = verifyToken(request)
+      if (!userData || userData.role !== 'admin') {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 403 }
+        ))
+      }
+
+      const body = await request.json()
+      const { name, description, icon, chapters } = body
+
+      const subject = {
+        id: uuidv4(),
+        name,
+        description,
+        icon,
+        chapters: chapters || 0,
+        createdAt: new Date()
+      }
+
+      await db.collection('subjects').insertOne(subject)
+      const { _id, ...cleanedSubject } = subject
+      return handleCORS(NextResponse.json(cleanedSubject))
+    }
+
+    // ============ STUDY MATERIALS ROUTES ============
+    
+    // Get all study materials - GET /api/materials
+    if (route === '/materials' && method === 'GET') {
+      const url = new URL(request.url)
+      const subjectId = url.searchParams.get('subjectId')
       
-      return handleCORS(NextResponse.json(cleanedStatusChecks))
+      const query = subjectId ? { subjectId } : {}
+      const materials = await db.collection('study_materials').find(query).toArray()
+      const cleanedMaterials = materials.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedMaterials))
+    }
+
+    // Create study material - POST /api/materials (Admin only)
+    if (route === '/materials' && method === 'POST') {
+      const userData = verifyToken(request)
+      if (!userData || userData.role !== 'admin') {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 403 }
+        ))
+      }
+
+      const body = await request.json()
+      const { title, description, subjectId, type, content, fileUrl } = body
+
+      const material = {
+        id: uuidv4(),
+        title,
+        description,
+        subjectId,
+        type, // 'pdf', 'video', 'notes'
+        content,
+        fileUrl,
+        createdAt: new Date()
+      }
+
+      await db.collection('study_materials').insertOne(material)
+      const { _id, ...cleanedMaterial } = material
+      return handleCORS(NextResponse.json(cleanedMaterial))
+    }
+
+    // ============ TESTS ROUTES ============
+    
+    // Get all tests - GET /api/tests
+    if (route === '/tests' && method === 'GET') {
+      const url = new URL(request.url)
+      const category = url.searchParams.get('category')
+      
+      const query = category ? { category } : {}
+      const tests = await db.collection('tests').find(query).toArray()
+      const cleanedTests = tests.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedTests))
+    }
+
+    // Get test by ID - GET /api/tests/[id]
+    if (route.startsWith('/tests/') && method === 'GET') {
+      const testId = path[1]
+      const test = await db.collection('tests').findOne({ id: testId })
+      
+      if (!test) {
+        return handleCORS(NextResponse.json(
+          { error: "Test not found" },
+          { status: 404 }
+        ))
+      }
+
+      const { _id, ...cleanedTest } = test
+      return handleCORS(NextResponse.json(cleanedTest))
+    }
+
+    // Create test - POST /api/tests (Admin only)
+    if (route === '/tests' && method === 'POST') {
+      const userData = verifyToken(request)
+      if (!userData || userData.role !== 'admin') {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 403 }
+        ))
+      }
+
+      const body = await request.json()
+      const { name, description, category, duration, questions, difficulty } = body
+
+      const test = {
+        id: uuidv4(),
+        name,
+        description,
+        category, // 'sectional', 'full-length', 'previous-year'
+        duration, // in minutes
+        questions,
+        difficulty, // 'easy', 'medium', 'hard'
+        createdAt: new Date()
+      }
+
+      await db.collection('tests').insertOne(test)
+      const { _id, ...cleanedTest } = test
+      return handleCORS(NextResponse.json(cleanedTest))
+    }
+
+    // ============ TEST ATTEMPTS ROUTES ============
+    
+    // Submit test - POST /api/test-attempts
+    if (route === '/test-attempts' && method === 'POST') {
+      const userData = verifyToken(request)
+      if (!userData) {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        ))
+      }
+
+      const body = await request.json()
+      const { testId, answers, timeSpent } = body
+
+      // Get test to calculate score
+      const test = await db.collection('tests').findOne({ id: testId })
+      if (!test) {
+        return handleCORS(NextResponse.json(
+          { error: "Test not found" },
+          { status: 404 }
+        ))
+      }
+
+      // Calculate score
+      let correctAnswers = 0
+      const totalQuestions = test.questions?.length || 0
+      
+      if (test.questions && answers) {
+        test.questions.forEach((question, index) => {
+          if (answers[question.id] === question.correctAnswer) {
+            correctAnswers++
+          }
+        })
+      }
+
+      const score = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0
+
+      const attempt = {
+        id: uuidv4(),
+        userId: userData.userId,
+        testId,
+        answers,
+        score: Math.round(score * 100) / 100,
+        correctAnswers,
+        totalQuestions,
+        timeSpent,
+        submittedAt: new Date()
+      }
+
+      await db.collection('test_attempts').insertOne(attempt)
+      const { _id, ...cleanedAttempt } = attempt
+      return handleCORS(NextResponse.json(cleanedAttempt))
+    }
+
+    // Get user's test attempts - GET /api/test-attempts
+    if (route === '/test-attempts' && method === 'GET') {
+      const userData = verifyToken(request)
+      if (!userData) {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        ))
+      }
+
+      const attempts = await db.collection('test_attempts')
+        .find({ userId: userData.userId })
+        .sort({ submittedAt: -1 })
+        .toArray()
+      
+      const cleanedAttempts = attempts.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedAttempts))
+    }
+
+    // ============ ADMIN ROUTES ============
+    
+    // Get all users - GET /api/users (Admin only)
+    if (route === '/users' && method === 'GET') {
+      const userData = verifyToken(request)
+      if (!userData || userData.role !== 'admin') {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 403 }
+        ))
+      }
+
+      const users = await db.collection('users').find({}).toArray()
+      const cleanedUsers = users.map(({ _id, password, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedUsers))
     }
 
     // Route not found
     return handleCORS(NextResponse.json(
-      { error: `Route ${route} not found` }, 
+      { error: `Route ${route} not found` },
       { status: 404 }
     ))
 
   } catch (error) {
     console.error('API Error:', error)
     return handleCORS(NextResponse.json(
-      { error: "Internal server error" }, 
+      { error: "Internal server error", details: error.message },
       { status: 500 }
     ))
   }
