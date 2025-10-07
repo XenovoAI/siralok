@@ -372,25 +372,31 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {subjects.map((subject, index) => (
-              <Card key={index} className="hover:shadow-lg transition">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4">
-                    {getSubjectIcon(subject.name)}
-                  </div>
-                  <CardTitle>{subject.name}</CardTitle>
-                  <CardDescription>{subject.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">{subject.chapters} Chapters</p>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                    Access Materials
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+            {Array.isArray(subjects) && subjects.length > 0 ? (
+              subjects.map((subject, index) => (
+                <Card key={index} className="hover:shadow-lg transition">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4">
+                      {getSubjectIcon(subject.name)}
+                    </div>
+                    <CardTitle>{subject.name}</CardTitle>
+                    <CardDescription>{subject.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">{subject.chapters} Chapters</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                      Access Materials
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-600">Loading subjects...</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
