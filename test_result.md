@@ -152,15 +152,18 @@ backend:
   
   - task: "Test Attempts API (Submit and scoring)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented test submission endpoint. POST /api/test-attempts accepts user answers and calculates score automatically. GET /api/test-attempts returns user's test history. Includes authentication check. Not yet tested end-to-end with frontend."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING PASSED: POST /api/test-attempts with auth (200) successfully submits test and calculates score (0% for incorrect answers). GET /api/test-attempts with auth (200) returns user's test history. POST /api/test-attempts without auth (401) properly rejected. Score calculation working correctly with proper authentication checks."
   
   - task: "Study Materials API"
     implemented: true
