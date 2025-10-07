@@ -70,10 +70,18 @@ const Home = () => {
     try {
       // Check if subjects exist
       const response = await fetch('/api/subjects')
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch subjects')
+      }
+      
       const existingSubjects = await response.json()
       
-      if (existingSubjects.length === 0) {
-        // Initialize default subjects
+      // Ensure we have an array
+      if (Array.isArray(existingSubjects) && existingSubjects.length > 0) {
+        setSubjects(existingSubjects)
+      } else {
+        // Initialize default subjects if none exist
         const defaultSubjects = [
           {
             name: 'Physics',
@@ -102,11 +110,37 @@ const Home = () => {
         ]
         
         setSubjects(defaultSubjects)
-      } else {
-        setSubjects(existingSubjects)
       }
     } catch (error) {
       console.error('Error initializing subjects:', error)
+      // Set default subjects on error
+      const defaultSubjects = [
+        {
+          name: 'Physics',
+          description: 'Comprehensive physics notes and problem-solving techniques',
+          icon: 'atom',
+          chapters: 25
+        },
+        {
+          name: 'Chemistry',
+          description: 'Organic, Inorganic, and Physical chemistry concepts',
+          icon: 'flask',
+          chapters: 28
+        },
+        {
+          name: 'Biology',
+          description: 'Botany and Zoology for NEET preparation',
+          icon: 'microscope',
+          chapters: 38
+        },
+        {
+          name: 'Mathematics',
+          description: 'Advanced mathematics for JEE preparation',
+          icon: 'calculator',
+          chapters: 22
+        }
+      ]
+      setSubjects(defaultSubjects)
     }
   }
 
