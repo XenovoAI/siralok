@@ -4,17 +4,37 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-// MongoDB connection
+// MongoDB connection with connection pooling
 let client
 let db
+let connectPromise
 
 async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
+  if (db) {
+    return db
   }
-  return db
+  
+  if (!connectPromise) {
+    connectPromise = (async () => {
+      try {
+        client = new MongoClient(process.env.MONGO_URL, {
+          maxPoolSize: 10,
+          minPoolSize: 2,
+          maxIdleTimeMS: 30000,
+          connectTimeoutMS: 5000,
+          serverSelectionTimeoutMS: 5000
+        })
+        await client.connect()
+        db = client.db(process.env.DB_NAME)
+        return db
+      } catch (error) {
+        connectPromise = null
+        throw error
+      }
+    })()
+  }
+  
+  return connectPromise
 }
 
 // Helper function to handle CORS
