@@ -214,8 +214,18 @@ async function handleRoute(request, { params }) {
     
     // Get all subjects - GET /api/subjects
     if (route === '/subjects' && method === 'GET') {
+      // Check cache first
+      const cachedSubjects = getCache('subjects')
+      if (cachedSubjects) {
+        return handleCORS(NextResponse.json(cachedSubjects))
+      }
+      
       const subjects = await db.collection('subjects').find({}).toArray()
       const cleanedSubjects = subjects.map(({ _id, ...rest }) => rest)
+      
+      // Cache the result
+      setCache('subjects', cleanedSubjects)
+      
       return handleCORS(NextResponse.json(cleanedSubjects))
     }
 
