@@ -37,12 +37,29 @@ async function connectToMongo() {
   return connectPromise
 }
 
+// Simple in-memory cache
+const cache = new Map()
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
+function getCache(key) {
+  const cached = cache.get(key)
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data
+  }
+  return null
+}
+
+function setCache(key, data) {
+  cache.set(key, { data, timestamp: Date.now() })
+}
+
 // Helper function to handle CORS
 function handleCORS(response) {
   response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   response.headers.set('Access-Control-Allow-Credentials', 'true')
+  response.headers.set('Cache-Control', 'public, max-age=300')
   return response
 }
 
