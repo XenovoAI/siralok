@@ -305,9 +305,21 @@ async function handleRoute(request, { params }) {
       const url = new URL(request.url)
       const category = url.searchParams.get('category')
       
+      const cacheKey = category ? `tests_${category}` : 'tests_all'
+      
+      // Check cache first
+      const cachedTests = getCache(cacheKey)
+      if (cachedTests) {
+        return handleCORS(NextResponse.json(cachedTests))
+      }
+      
       const query = category ? { category } : {}
       const tests = await db.collection('tests').find(query).toArray()
       const cleanedTests = tests.map(({ _id, ...rest }) => rest)
+      
+      // Cache the result
+      setCache(cacheKey, cleanedTests)
+      
       return handleCORS(NextResponse.json(cleanedTests))
     }
 
