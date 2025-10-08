@@ -7,25 +7,70 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
+// Default subjects as fallback
+const DEFAULT_SUBJECTS = [
+  {
+    name: 'Physics',
+    description: 'Comprehensive physics notes and problem-solving techniques',
+    icon: 'atom',
+    chapters: 25
+  },
+  {
+    name: 'Chemistry',
+    description: 'Organic, Inorganic, and Physical chemistry concepts',
+    icon: 'flask',
+    chapters: 28
+  },
+  {
+    name: 'Biology',
+    description: 'Botany and Zoology for NEET preparation',
+    icon: 'microscope',
+    chapters: 38
+  },
+  {
+    name: 'Mathematics',
+    description: 'Advanced mathematics for JEE preparation',
+    icon: 'calculator',
+    chapters: 22
+  }
+]
+
 export default function MaterialsPage() {
-  const [subjects, setSubjects] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [subjects, setSubjects] = useState(DEFAULT_SUBJECTS)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    // Check if we have cached subjects
+    const cachedSubjects = localStorage.getItem('subjects')
+    if (cachedSubjects) {
+      try {
+        const parsed = JSON.parse(cachedSubjects)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSubjects(parsed)
+        }
+      } catch (e) {
+        console.error('Error parsing cached subjects:', e)
+      }
+    }
+    
+    // Fetch fresh data in background
     fetchSubjects()
   }, [])
 
   const fetchSubjects = async () => {
     try {
-      const response = await fetch('/api/subjects')
+      const response = await fetch('/api/subjects', {
+        headers: { 'Cache-Control': 'max-age=300' }
+      })
       if (response.ok) {
         const data = await response.json()
-        setSubjects(Array.isArray(data) ? data : [])
+        if (Array.isArray(data) && data.length > 0) {
+          setSubjects(data)
+          localStorage.setItem('subjects', JSON.stringify(data))
+        }
       }
     } catch (error) {
       console.error('Error fetching subjects:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
