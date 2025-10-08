@@ -12,24 +12,41 @@ import Footer from '@/components/Footer'
 
 export default function TestsPage() {
   const [tests, setTests] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
+    // Check if we have cached tests
+    const cachedTests = localStorage.getItem('tests')
+    if (cachedTests) {
+      try {
+        const parsed = JSON.parse(cachedTests)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTests(parsed)
+        }
+      } catch (e) {
+        console.error('Error parsing cached tests:', e)
+      }
+    }
+    
+    // Fetch fresh data in background
     fetchTests()
   }, [])
 
   const fetchTests = async () => {
     try {
-      const response = await fetch('/api/tests')
+      const response = await fetch('/api/tests', {
+        headers: { 'Cache-Control': 'max-age=300' }
+      })
       if (response.ok) {
         const data = await response.json()
-        setTests(Array.isArray(data) ? data : [])
+        if (Array.isArray(data) && data.length > 0) {
+          setTests(data)
+          localStorage.setItem('tests', JSON.stringify(data))
+        }
       }
     } catch (error) {
       console.error('Error fetching tests:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
