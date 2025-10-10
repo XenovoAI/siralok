@@ -120,14 +120,14 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Link href="/materials" className="block">
-              <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-8 text-white hover:shadow-xl transition">
+              <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg p-8 text-white hover:shadow-xl transition">
                 <h3 className="text-2xl font-bold mb-2">Study Materials</h3>
                 <p className="mb-4">Access comprehensive notes and resources</p>
                 <Button variant="secondary">Browse Materials →</Button>
               </div>
             </Link>
             <Link href="/tests" className="block">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-8 text-white hover:shadow-xl transition">
+              <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg p-8 text-white hover:shadow-xl transition">
                 <h3 className="text-2xl font-bold mb-2">Live Test Series</h3>
                 <p className="mb-4">Practice with mock exams and assessments</p>
                 <Button variant="secondary">Start Testing →</Button>
