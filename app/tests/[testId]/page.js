@@ -173,7 +173,7 @@ export default function TestTakingPage() {
             <Button
               onClick={handleSubmit}
               size="lg"
-              className="bg-sky-600 hover:bg-orange-700 px-12"
+              className="bg-sky-600 hover:bg-sky-700 px-12"
             >
               Submit Test
             </Button>

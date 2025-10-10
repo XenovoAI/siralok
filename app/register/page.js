@@ -71,7 +71,7 @@ export default function RegisterPage() {
                     <Label htmlFor="password">Password</Label>
                     <Input id="password" name="password" type="password" placeholder="••••••••" required />
                   </div>
-                  <Button type="submit" className="w-full bg-sky-600 hover:bg-orange-700" disabled={loading}>
+                  <Button type="submit" className="w-full bg-sky-600 hover:bg-sky-700" disabled={loading}>
                     {loading ? 'Creating account...' : 'Register'}
                   </Button>
                 </div>

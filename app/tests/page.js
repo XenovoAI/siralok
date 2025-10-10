@@ -103,7 +103,7 @@ export default function TestsPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={() => handleStartTest(test.id)} className="w-full bg-sky-600 hover:bg-orange-700">
+          <Button onClick={() => handleStartTest(test.id)} className="w-full bg-sky-600 hover:bg-sky-700">
             <Play className="w-4 h-4 mr-2" />
             Start Test
           </Button>
