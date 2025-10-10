@@ -97,7 +97,7 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, <span className="text-orange-600">{user?.name}</span>!
+            Welcome back, <span className="text-sky-600">{user?.name}</span>!
           </h1>
           <p className="text-gray-600">Track your progress and continue your preparation</p>
         </div>
@@ -107,7 +107,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Tests Attempted</CardTitle>
-              <Award className="h-4 w-4 text-orange-600" />
+              <Award className="h-4 w-4 text-sky-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{stats.total}</div>
@@ -118,7 +118,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Average Score</CardTitle>
-              <BarChart className="h-4 w-4 text-orange-600" />
+              <BarChart className="h-4 w-4 text-sky-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{stats.avg}%</div>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Best Score</CardTitle>
-              <TrendingUp className="h-4 w-4 text-orange-600" />
+              <TrendingUp className="h-4 w-4 text-sky-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{stats.best}%</div>
@@ -148,7 +148,7 @@ export default function DashboardPage() {
             {testAttempts.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-600 mb-4">You haven't taken any tests yet</p>
-                <a href="/tests" className="text-orange-600 hover:underline">
+                <a href="/tests" className="text-sky-600 hover:underline">
                   Browse available tests →
                 </a>
               </div>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-orange-600">{attempt.score}%</p>
+                      <p className="text-2xl font-bold text-sky-600">{attempt.score}%</p>
                       <p className="text-sm text-gray-600">
                         {attempt.correctAnswers}/{attempt.totalQuestions} correct
                       </p>

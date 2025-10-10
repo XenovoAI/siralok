@@ -125,7 +125,7 @@ export default function TestTakingPage() {
               <h1 className="text-3xl font-bold text-gray-900">{test?.name}</h1>
               <p className="text-gray-600 mt-1">{test?.description}</p>
             </div>
-            <div className="flex items-center space-x-2 text-orange-600 font-semibold text-xl">
+            <div className="flex items-center space-x-2 text-sky-600 font-semibold text-xl">
               <Clock className="w-6 h-6" />
               <span>{formatTime(timeRemaining)}</span>
             </div>
@@ -152,7 +152,7 @@ export default function TestTakingPage() {
                         value={option}
                         checked={answers[question.id] === option}
                         onChange={() => handleAnswerChange(question.id, option)}
-                        className="w-4 h-4 text-orange-600"
+                        className="w-4 h-4 text-sky-600"
                       />
                       <span>{option}</span>
                     </label>
@@ -173,7 +173,7 @@ export default function TestTakingPage() {
             <Button
               onClick={handleSubmit}
               size="lg"
-              className="bg-orange-600 hover:bg-orange-700 px-12"
+              className="bg-sky-600 hover:bg-orange-700 px-12"
             >
               Submit Test
             </Button>

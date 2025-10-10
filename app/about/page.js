@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              About <span className="text-orange-600">SIR CBSE</span>
+              About <span className="text-sky-600">SIR CBSE</span>
             </h1>
             <p className="text-xl text-gray-600">
               Empowering students to achieve their JEE and NEET dreams
@@ -36,7 +36,7 @@ export default function AboutPage() {
 
             <div className="grid md:grid-cols-2 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                   <Target className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Focused Learning</h3>
@@ -46,7 +46,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                   <Users className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Expert Faculty</h3>
@@ -56,7 +56,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                   <Award className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Proven Results</h3>
@@ -66,7 +66,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                   <Zap className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Regular Updates</h3>
@@ -84,19 +84,19 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">50,000+</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">50,000+</div>
               <p className="text-gray-600">Active Students</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">1000+</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">1000+</div>
               <p className="text-gray-600">Practice Tests</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">95%</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">95%</div>
               <p className="text-gray-600">Success Rate</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">24/7</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">24/7</div>
               <p className="text-gray-600">Support Available</p>
             </div>
           </div>

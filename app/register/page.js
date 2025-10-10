@@ -71,7 +71,7 @@ export default function RegisterPage() {
                     <Label htmlFor="password">Password</Label>
                     <Input id="password" name="password" type="password" placeholder="••••••••" required />
                   </div>
-                  <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700" disabled={loading}>
+                  <Button type="submit" className="w-full bg-sky-600 hover:bg-orange-700" disabled={loading}>
                     {loading ? 'Creating account...' : 'Register'}
                   </Button>
                 </div>
@@ -80,7 +80,7 @@ export default function RegisterPage() {
             <CardFooter className="flex flex-col space-y-2">
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}
-                <Link href="/login" className="text-orange-600 hover:underline">
+                <Link href="/login" className="text-sky-600 hover:underline">
                   Login here
                 </Link>
               </p>

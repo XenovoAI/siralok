@@ -103,7 +103,7 @@ export default function TestsPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={() => handleStartTest(test.id)} className="w-full bg-orange-600 hover:bg-orange-700">
+          <Button onClick={() => handleStartTest(test.id)} className="w-full bg-sky-600 hover:bg-orange-700">
             <Play className="w-4 h-4 mr-2" />
             Start Test
           </Button>
@@ -121,7 +121,7 @@ export default function TestsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              Live <span className="text-orange-600">Test Series</span>
+              Live <span className="text-sky-600">Test Series</span>
             </h1>
             <p className="text-xl text-gray-600">
               Practice with real-time tests and track your progress
