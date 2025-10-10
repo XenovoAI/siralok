@@ -114,7 +114,7 @@ export default function MaterialsPage() {
               {subjects.map((subject, index) => (
                 <Card key={index} className="hover:shadow-lg transition">
                   <CardHeader>
-                    <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4">
+                    <div className="w-16 h-16 bg-sky-100 rounded-lg flex items-center justify-center text-sky-600 mb-4">
                       {getSubjectIcon(subject.name)}
                     </div>
                     <CardTitle>{subject.name}</CardTitle>
@@ -124,7 +124,7 @@ export default function MaterialsPage() {
                     <p className="text-sm text-gray-600">{subject.chapters} Chapters</p>
                   </CardContent>
                   <CardFooter className="flex flex-col gap-2">
-                    <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                    <Button className="w-full bg-sky-600 hover:bg-sky-700">
                       <FileText className="w-4 h-4 mr-2" />
                       View Notes
                     </Button>
