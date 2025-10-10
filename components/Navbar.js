@@ -119,7 +119,7 @@ export default function Navbar() {
                   <Button variant="outline" className="w-full">Login</Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700">Register</Button>
+                  <Button className="w-full bg-sky-600 hover:bg-sky-700">Register</Button>
                 </Link>
               </>
             )}
