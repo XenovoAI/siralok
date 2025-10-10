@@ -135,7 +135,7 @@ export default function TermsOfService() {
               <p className="text-gray-700 leading-relaxed">
                 If you have any questions about these Terms of Service, please contact us at:
               </p>
-              <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+              <div className="mt-4 p-4 bg-sky-50 rounded-lg">
                 <p className="text-gray-700"><strong>Email:</strong> legal@sircbse.com</p>
                 <p className="text-gray-700"><strong>Phone:</strong> +91 1234567890</p>
                 <p className="text-gray-700"><strong>Address:</strong> SIR CBSE Education Services, India</p>
