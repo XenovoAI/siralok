@@ -36,7 +36,7 @@ export default function AboutPage() {
 
             <div className="grid md:grid-cols-2 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
                   <Target className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Focused Learning</h3>
@@ -46,7 +46,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
                   <Users className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Expert Faculty</h3>
@@ -56,7 +56,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
                   <Award className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Proven Results</h3>
@@ -66,7 +66,7 @@ export default function AboutPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
                   <Zap className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Regular Updates</h3>
