@@ -12,7 +12,7 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-bold mb-4">
               <span className="text-white">SIR</span>
-              <span className="text-orange-600">CBSE</span>
+              <span className="text-sky-400">CBSE</span>
             </h3>
             <p className="text-gray-400">Your partner in JEE and NEET success</p>
           </div>
@@ -20,9 +20,9 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><Link href="/about" className="hover:text-orange-600">About Us</Link></li>
-              <li><Link href="/privacy" className="hover:text-orange-600">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-orange-600">Terms of Service</Link></li>
+              <li><Link href="/about" className="hover:text-sky-400">About Us</Link></li>
+              <li><Link href="/privacy" className="hover:text-sky-400">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-sky-400">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -37,7 +37,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Newsletter</h4>
             <Input placeholder="Your email" className="mb-2 bg-gray-800 border-gray-700" />
-            <Button className="w-full bg-orange-600 hover:bg-orange-700">Subscribe</Button>
+            <Button className="w-full bg-sky-600 hover:bg-sky-700">Subscribe</Button>
           </div>
         </div>
 
