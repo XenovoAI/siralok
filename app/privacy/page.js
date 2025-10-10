@@ -8,10 +8,10 @@ export default function PrivacyPolicy() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="py-20 bg-gradient-to-b from-orange-50 to-white">
+      <div className="py-20 bg-gradient-to-b from-sky-50 to-white">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Privacy <span className="text-orange-600">Policy</span>
+            Privacy <span className="text-sky-600">Policy</span>
           </h1>
           <p className="text-gray-600 mb-8">Last Updated: January 2025</p>
 
