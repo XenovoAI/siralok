@@ -11,7 +11,7 @@ import sys
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://medical-engineering.preview.emergentagent.com/api"
+BASE_URL = "https://legal-content-1.preview.emergentagent.com/api"
 ADMIN_EMAIL = "admin@sircbse.com"
 ADMIN_PASSWORD = "admin123"
 
