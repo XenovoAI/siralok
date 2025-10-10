@@ -48,17 +48,17 @@ export default function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold">
               <span className="text-gray-900">SIR</span>
-              <span className="text-orange-600">CBSE</span>
+              <span className="text-sky-600">CBSE</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-orange-600 transition">Home</Link>
-            <Link href="/materials" className="text-gray-700 hover:text-orange-600 transition">Study Materials</Link>
-            <Link href="/tests" className="text-gray-700 hover:text-orange-600 transition">Tests</Link>
-            <Link href="/about" className="text-gray-700 hover:text-orange-600 transition">About</Link>
-            <Link href="/contact" className="text-gray-700 hover:text-orange-600 transition">Contact</Link>
+            <Link href="/" className="text-gray-700 hover:text-sky-600 transition">Home</Link>
+            <Link href="/materials" className="text-gray-700 hover:text-sky-600 transition">Study Materials</Link>
+            <Link href="/tests" className="text-gray-700 hover:text-sky-600 transition">Tests</Link>
+            <Link href="/about" className="text-gray-700 hover:text-sky-600 transition">About</Link>
+            <Link href="/contact" className="text-gray-700 hover:text-sky-600 transition">Contact</Link>
           </div>
 
           {/* Auth Buttons */}
