@@ -89,11 +89,11 @@ export default function MaterialsPage() {
       <Navbar />
 
       {/* Header */}
-      <section className="py-16 bg-gradient-to-b from-orange-50 to-white">
+      <section className="py-16 bg-gradient-to-b from-sky-50 to-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              Study <span className="text-orange-600">Materials</span>
+              Study <span className="text-sky-600">Materials</span>
             </h1>
             <p className="text-xl text-gray-600">
               Access comprehensive study materials for JEE and NEET preparation
