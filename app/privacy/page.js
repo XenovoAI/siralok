@@ -159,14 +159,14 @@ export default function PrivacyPolicy() {
               <p className="text-gray-700 leading-relaxed mb-4">
                 If you have any questions about this privacy policy or our privacy practices, please contact us:
               </p>
-              <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+              <div className="mt-4 p-4 bg-sky-50 rounded-lg">
                 <p className="text-gray-700"><strong>Email:</strong> privacy@sircbse.com</p>
                 <p className="text-gray-700"><strong>Phone:</strong> +91 1234567890</p>
                 <p className="text-gray-700"><strong>Address:</strong> SIR CBSE Education Services, India</p>
               </div>
             </section>
 
-            <section className="mt-8 p-6 bg-orange-50 rounded-lg border-l-4 border-orange-600">
+            <section className="mt-8 p-6 bg-sky-50 rounded-lg border-l-4 border-sky-600">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Your Privacy Matters</h3>
               <p className="text-gray-700">
                 We are committed to protecting your privacy and ensuring the security of your personal information. If you have any concerns or questions about how we handle your data, please don't hesitate to contact us.
