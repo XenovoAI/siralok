@@ -41,7 +41,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <Book className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Comprehensive Notes</h3>
@@ -49,7 +49,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <Video className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Video Solutions</h3>
@@ -57,7 +57,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <BarChart className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Performance Analytics</h3>
@@ -65,7 +65,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <Smartphone className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Mobile Friendly</h3>
@@ -73,7 +73,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <Users className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Expert Faculty</h3>
@@ -81,7 +81,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto mb-4">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 mx-auto mb-4">
                 <Clock className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
