@@ -100,15 +100,15 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">50,000+</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">50,000+</div>
               <p className="text-gray-600">Active Students</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">95%</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">95%</div>
               <p className="text-gray-600">Success Rate</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">1000+</div>
+              <div className="text-4xl font-bold text-sky-600 mb-2">1000+</div>
               <p className="text-gray-600">Practice Tests</p>
             </div>
           </div>
