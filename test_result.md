@@ -315,6 +315,30 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Created footer with four columns: Logo/description, Quick Links, Contact info, Newsletter signup. Includes copyright notice."
+  
+  - task: "Terms of Service Page"
+    implemented: true
+    working: true
+    file: "/app/app/terms/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created comprehensive Terms of Service page with 14 sections covering acceptance, use license, user accounts, course content, payments, tests, intellectual property, disclaimers, limitations, and legal matters. Follows site design with orange accent, Navbar, and Footer components. Tested with curl - page renders correctly."
+  
+  - task: "Privacy Policy Page"
+    implemented: true
+    working: true
+    file: "/app/app/privacy/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created comprehensive Privacy Policy page with 14 sections covering data collection, usage, sharing, security, retention, user rights, cookies, children's privacy, and contact information. Follows site design with orange accent, Navbar, and Footer components. Tested with curl - page renders correctly."
 
 metadata:
   created_by: "main_agent"
