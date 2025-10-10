@@ -72,7 +72,7 @@ export default function Navbar() {
                 <Button onClick={handleLogout} variant="outline">Logout</Button>
                 {user.role === 'admin' && (
                   <Link href="/admin">
-                    <Button className="bg-orange-600 hover:bg-orange-700">Admin Panel</Button>
+                    <Button className="bg-sky-600 hover:bg-sky-700">Admin Panel</Button>
                   </Link>
                 )}
               </div>
@@ -82,7 +82,7 @@ export default function Navbar() {
                   <Button variant="outline">Login</Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="bg-orange-600 hover:bg-orange-700">Register</Button>
+                  <Button className="bg-sky-600 hover:bg-sky-700">Register</Button>
                 </Link>
               </>
             )}
