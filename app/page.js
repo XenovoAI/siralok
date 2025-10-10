@@ -12,17 +12,17 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-orange-50 to-white">
+      <section className="py-20 bg-gradient-to-b from-sky-50 to-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Ace Your <span className="text-orange-600">JEE and NEET</span> Exam with Expert Study Materials
+              Ace Your <span className="text-sky-600">JEE and NEET</span> Exam with Expert Study Materials
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               Access comprehensive JEE and NEET preparation materials and practice tests. Prepare effectively and boost your confidence for the exam.
             </p>
             <Link href="/materials">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 text-lg">
+              <Button size="lg" className="bg-sky-600 hover:bg-sky-700 text-white px-8 py-6 text-lg">
                 Explore Study Materials
                 <ChevronRight className="ml-2" />
               </Button>
