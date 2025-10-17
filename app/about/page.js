@@ -114,7 +114,7 @@ export default function AboutPage() {
                   HP
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-1">Harshit Patidar</h3>
-                <p className="text-sky-600 font-semibold mb-3">Co-Founder & CTO</p>
+                <p className="text-sky-600 font-semibold mb-4">Co-Founder & CTO</p>
                 <a href="mailto:xenovoai@gmail.com" className="text-gray-600 hover:text-sky-600 transition-colors inline-flex items-center gap-2 mb-4">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
@@ -122,9 +122,11 @@ export default function AboutPage() {
                   </svg>
                   xenovoai@gmail.com
                 </a>
-                <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-sky-100">
-                  Also the Founder & CEO of <span className="font-semibold text-sky-600">Xenovo AI</span>, an AI innovation company
-                </p>
+                <div className="pt-4 border-t border-sky-100">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Co-Founder of SirCBSE.com and Founder & CEO of <span className="font-semibold text-sky-600">Xenovo AI</span>, focused on building advanced AI technologies. Passionate about innovation and education, creating solutions that make learning and technology accessible to everyone.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
