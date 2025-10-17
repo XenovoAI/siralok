@@ -92,14 +92,18 @@ export default function AboutPage() {
                   AK
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-1">Alok Kumar</h3>
-                <p className="text-sky-600 font-semibold mb-3">Founder & CEO</p>
-                <a href="mailto:sircbse@gmail.com" className="text-gray-600 hover:text-sky-600 transition-colors inline-flex items-center gap-2">
+                <p className="text-sky-600 font-semibold mb-2">Founder & CEO</p>
+                <p className="text-sm text-sky-500 font-medium mb-4">EdTech Influencer</p>
+                <a href="mailto:sircbse@gmail.com" className="text-gray-600 hover:text-sky-600 transition-colors inline-flex items-center gap-2 mb-4">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                   </svg>
                   sircbse@gmail.com
                 </a>
+                <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-sky-100">
+                  A passionate educator and EdTech influencer dedicated to revolutionizing online education. With years of experience in the education sector, Alok founded SIR CBSE to make quality JEE and NEET preparation accessible to every student. His vision is to leverage technology to create an inclusive learning environment where students from all backgrounds can achieve their academic dreams.
+                </p>
               </div>
 
               {/* Co-founder and CTO */}
