@@ -79,6 +79,52 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Leadership Team Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Our Leadership Team</h2>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Founder and CEO */}
+              <div className="bg-gradient-to-br from-sky-50 to-white border border-sky-100 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
+                <div className="w-20 h-20 bg-sky-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  AK
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">Alok Kumar</h3>
+                <p className="text-sky-600 font-semibold mb-3">Founder & CEO</p>
+                <a href="mailto:sircbse@gmail.com" className="text-gray-600 hover:text-sky-600 transition-colors inline-flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
+                  sircbse@gmail.com
+                </a>
+              </div>
+
+              {/* Co-founder and CTO */}
+              <div className="bg-gradient-to-br from-sky-50 to-white border border-sky-100 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
+                <div className="w-20 h-20 bg-sky-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  HP
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">Harshit Patidar</h3>
+                <p className="text-sky-600 font-semibold mb-3">Co-Founder & CTO</p>
+                <a href="mailto:xenovoai@gmail.com" className="text-gray-600 hover:text-sky-600 transition-colors inline-flex items-center gap-2 mb-4">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
+                  xenovoai@gmail.com
+                </a>
+                <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-sky-100">
+                  Also the Founder & CEO of <span className="font-semibold text-sky-600">Xenovo AI</span>, an AI innovation company
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
