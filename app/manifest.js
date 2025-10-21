@@ -10,28 +10,10 @@ export default function manifest() {
     orientation: 'portrait-primary',
     icons: [
       {
-        src: '/icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable',
-      },
-      {
-        src: '/icon-512.png',
+        src: '/logo.jpg',
         sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable',
-      },
-      {
-        src: '/icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'any',
-      },
-      {
-        src: '/icon-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any',
+        type: 'image/jpeg',
+        purpose: 'any maskable',
       },
     ],
     categories: ['education', 'learning'],
@@ -41,14 +23,12 @@ export default function manifest() {
         short_name: 'Materials',
         description: 'Access study materials',
         url: '/materials',
-        icons: [{ src: '/icon-materials.png', sizes: '96x96' }],
       },
       {
         name: 'Practice Tests',
         short_name: 'Tests',
         description: 'Take practice tests',
         url: '/tests',
-        icons: [{ src: '/icon-tests.png', sizes: '96x96' }],
       },
     ],
   }
