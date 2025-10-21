@@ -47,7 +47,7 @@ export const metadata = {
     siteName: 'SIRCBSE',
     images: [
       {
-        url: 'https://www.sircbse.com/logo.jpg',
+        url: 'https://www.sircbse.com/og-image.jpg',
         width: 512,
         height: 512,
         alt: 'SIRCBSE - NEET & JEE Preparation Platform',
@@ -58,7 +58,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'SIRCBSE - Best NEET & JEE Preparation Platform',
     description: 'Ace NEET & JEE with affordable question banks & study materials.',
-    images: ['https://www.sircbse.com/logo.jpg'],
+    images: ['https://www.sircbse.com/twitter-image.jpg'],
     creator: '@sircbse',
     site: '@sircbse',
   },
