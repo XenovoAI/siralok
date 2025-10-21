@@ -4,8 +4,58 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import Script from 'next/script'
 
 export const metadata = {
-  title: 'SIR CBSE - JEE and NEET Preparation Platform',
-  description: 'Comprehensive JEE and NEET preparation with study materials, live tests, and expert guidance',
+  title: 'SIRCBSE - Best NEET & JEE Preparation Platform | Question Banks & Study Materials',
+  description: 'Ace NEET & JEE with SIRCBSE\'s affordable question banks, study materials, and practice tests. Made by MBBS students. Class 11, 12 & Droppers PDFs starting at ₹29.',
+  keywords: 'NEET preparation, JEE preparation, biology question bank, physics questions, chemistry questions, study materials, mock tests, NEET 2026, JEE 2026',
+  authors: [{ name: 'Alok Kumar' }, { name: 'Harshit Patidar' }],
+  creator: 'SIRCBSE',
+  publisher: 'SIRCBSE',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://www.sircbse.com',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://www.sircbse.com/',
+    title: 'SIRCBSE - Best NEET & JEE Preparation Platform',
+    description: 'Ace NEET & JEE with affordable question banks, study materials & practice tests. Made by MBBS students.',
+    siteName: 'SIRCBSE',
+    images: [
+      {
+        url: 'https://www.sircbse.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'SIRCBSE - NEET & JEE Preparation Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SIRCBSE - Best NEET & JEE Preparation Platform',
+    description: 'Ace NEET & JEE with affordable question banks & study materials.',
+    images: ['https://www.sircbse.com/twitter-image.jpg'],
+    creator: '@sircbse',
+    site: '@sircbse',
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  category: 'education',
+  other: {
+    'revisit-after': '7 days',
+    language: 'English',
+  },
 }
 
 export default function RootLayout({ children }) {
