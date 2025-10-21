@@ -75,14 +75,21 @@ export default function Navbar() {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
+            {loading ? (
+              <div className="w-8 h-8 animate-pulse bg-gray-200 rounded"></div>
+            ) : user ? (
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">Welcome, {user.name}</span>
+                <span className="text-sm text-gray-600">
+                  Welcome, {user.user_metadata?.name || user.email}
+                </span>
                 <Link href="/dashboard">
                   <Button variant="outline">Dashboard</Button>
                 </Link>
-                <Button onClick={handleLogout} variant="outline">Logout</Button>
-                {user.role === 'admin' && (
+                <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+                {user.user_metadata?.role === 'admin' && (
                   <Link href="/admin">
                     <Button className="bg-sky-600 hover:bg-sky-700">Admin Panel</Button>
                   </Link>
