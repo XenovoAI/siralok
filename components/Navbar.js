@@ -124,13 +124,20 @@ export default function Navbar() {
             <Link href="/tests" className="block text-gray-700">Tests</Link>
             <Link href="/about" className="block text-gray-700">About</Link>
             <Link href="/contact" className="block text-gray-700">Contact</Link>
-            {user ? (
+            {loading ? (
+              <div className="w-full h-10 animate-pulse bg-gray-200 rounded"></div>
+            ) : user ? (
               <>
-                <span className="block text-sm text-gray-600">Welcome, {user.name}</span>
+                <span className="block text-sm text-gray-600">
+                  Welcome, {user.user_metadata?.name || user.email}
+                </span>
                 <Link href="/dashboard">
                   <Button variant="outline" className="w-full">Dashboard</Button>
                 </Link>
-                <Button onClick={handleLogout} variant="outline" className="w-full">Logout</Button>
+                <Button onClick={handleLogout} variant="outline" className="w-full flex items-center justify-center gap-2">
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
               </>
             ) : (
               <>
