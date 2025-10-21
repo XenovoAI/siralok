@@ -27,18 +27,7 @@ export const AuthProvider = ({ children }) => {
     // Listen for auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (session?.user) {
-          // Fetch user details from users table
-          const { data: userData } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
-          
-          setUser(userData || session.user)
-        } else {
-          setUser(null)
-        }
+        setUser(session?.user || null)
         setLoading(false)
       }
     )
@@ -51,16 +40,7 @@ export const AuthProvider = ({ children }) => {
   const checkUser = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        // Fetch user details
-        const { data: userData } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-        
-        setUser(userData || session.user)
-      }
+      setUser(session?.user || null)
     } catch (error) {
       console.error('Error checking user:', error)
     } finally {
