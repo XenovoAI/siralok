@@ -2,42 +2,54 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     checkAuth()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const checkAuth = async () => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      try {
-        const response = await fetch('/api/auth/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
-        if (response.ok) {
-          const userData = await response.json()
-          setUser(userData)
-        } else {
-          localStorage.removeItem('token')
-        }
-      } catch (error) {
-        console.error('Error checking auth:', error)
-      }
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession()
+      if (error) throw error
+      setUser(session?.user || null)
+    } catch (error) {
+      console.error('Error checking auth:', error)
+      setUser(null)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    setUser(null)
-    router.push('/')
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      
+      setUser(null)
+      toast.success('Logged out successfully')
+      router.push('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+      toast.error('Failed to logout')
+    }
   }
 
   return (
