@@ -21,6 +21,20 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/logo.jpg', sizes: '512x512', type: 'image/jpeg' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/logo.jpg',
+    other: [
+      {
+        rel: 'apple-touch-icon-precomposed',
+        url: '/logo.jpg',
+      },
+    ],
+  },
   alternates: {
     canonical: 'https://www.sircbse.com',
   },
@@ -33,9 +47,9 @@ export const metadata = {
     siteName: 'SIRCBSE',
     images: [
       {
-        url: 'https://www.sircbse.com/og-image.jpg',
-        width: 1200,
-        height: 630,
+        url: 'https://www.sircbse.com/logo.jpg',
+        width: 512,
+        height: 512,
         alt: 'SIRCBSE - NEET & JEE Preparation Platform',
       },
     ],
@@ -44,7 +58,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'SIRCBSE - Best NEET & JEE Preparation Platform',
     description: 'Ace NEET & JEE with affordable question banks & study materials.',
-    images: ['https://www.sircbse.com/twitter-image.jpg'],
+    images: ['https://www.sircbse.com/logo.jpg'],
     creator: '@sircbse',
     site: '@sircbse',
   },
