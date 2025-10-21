@@ -3,85 +3,179 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
-import Navbar from '@/components/Navbar'
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const [errors, setErrors] = useState({})
 
-  const handleLogin = async (e) => {
+  const validateForm = () => {
+    const newErrors = {}
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }))
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!validateForm()) {
+      return
+    }
+
     setLoading(true)
 
-    const formData = new FormData(e.target)
-    const data = Object.fromEntries(formData)
-
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
       })
 
-      const result = await response.json()
+      if (error) throw error
 
-      if (response.ok) {
-        localStorage.setItem('token', result.token)
-        toast.success('Logged in successfully!')
-        router.push('/dashboard')
-      } else {
-        toast.error(result.error || 'Login failed')
-      }
+      toast.success('Login successful! Welcome back!')
+      router.push('/dashboard')
     } catch (error) {
       console.error('Login error:', error)
-      toast.error('An error occurred. Please try again.')
+      toast.error('Invalid email or password')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl">Welcome Back</CardTitle>
-              <CardDescription>Login to your SIR CBSE account</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin}>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" name="password" type="password" placeholder="••••••••" required />
-                  </div>
-                  <Button type="submit" className="w-full bg-sky-600 hover:bg-sky-700" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-2">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Link href="/register" className="text-sky-600 hover:underline">
-                  Register here
-                </Link>
-              </p>
-            </CardFooter>
-          </Card>
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <Link href="/">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              SIR<span className="text-sky-600">CBSE</span>
+            </h1>
+          </Link>
+          <p className="text-gray-600">Welcome back! Please login to your account</p>
+        </div>
+
+        {/* Login Form */}
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Login</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="your@email.com"
+                required
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password *
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 pr-10 ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <Link href="/forgot-password" className="text-sm text-sky-600 hover:text-sky-700">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-sky-600 hover:bg-sky-700 text-white py-2"
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </Button>
+          </form>
+
+          {/* Register Link */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              Don't have an account?{' '}
+              <Link href="/register" className="text-sky-600 hover:text-sky-700 font-semibold">
+                Register
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mt-4">
+          <Link href="/" className="text-gray-600 hover:text-gray-900">
+            ← Back to Home
+          </Link>
         </div>
       </div>
     </div>

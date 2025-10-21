@@ -1,180 +1,183 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { BarChart, Clock, Award, TrendingUp } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { Button } from '@/components/ui/button'
+import { Book, FileText, Clock, Award, TrendingUp, Target } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function DashboardPage() {
-  const [user, setUser] = useState(null)
-  const [testAttempts, setTestAttempts] = useState([])
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    checkAuth()
+    checkUser()
   }, [])
 
-  const checkAuth = async () => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      toast.error('Please login to view dashboard')
-      router.push('/login')
-      return
-    }
-
+  const checkUser = async () => {
     try {
-      const response = await fetch('/api/auth/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      const { data: { session }, error } = await supabase.auth.getSession()
       
-      if (response.ok) {
-        const userData = await response.json()
-        setUser(userData)
-        fetchTestAttempts(token)
-      } else {
-        localStorage.removeItem('token')
+      if (error) throw error
+
+      if (!session) {
+        toast.error('Please login to access dashboard')
         router.push('/login')
+        return
       }
-    } catch (error) {
-      console.error('Auth error:', error)
-      router.push('/login')
-    }
-  }
 
-  const fetchTestAttempts = async (token) => {
-    try {
-      const response = await fetch('/api/test-attempts', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        setTestAttempts(Array.isArray(data) ? data : [])
-      }
+      setUser(session.user)
     } catch (error) {
-      console.error('Error fetching test attempts:', error)
+      console.error('Auth check error:', error)
+      router.push('/login')
     } finally {
       setLoading(false)
     }
   }
 
-  const calculateStats = () => {
-    if (testAttempts.length === 0) return { avg: 0, total: 0, best: 0 }
-    
-    const scores = testAttempts.map(a => a.score)
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length
-    const best = Math.max(...scores)
-    
-    return {
-      avg: Math.round(avg * 100) / 100,
-      total: testAttempts.length,
-      best: Math.round(best * 100) / 100
-    }
-  }
-
-  const stats = calculateStats()
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-gray-600">Loading dashboard...</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, <span className="text-sky-600">{user?.name}</span>!
-          </h1>
-          <p className="text-gray-600">Track your progress and continue your preparation</p>
+      {/* Hero Section */}
+      <section className="py-12 bg-gradient-to-b from-sky-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Welcome back, {user?.user_metadata?.name || 'Student'}! 👋
+            </h1>
+            <p className="text-xl text-gray-600">
+              Continue your JEE and NEET preparation journey
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* Stats Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tests Attempted</CardTitle>
-              <Award className="h-4 w-4 text-sky-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stats.total}</div>
-              <p className="text-xs text-muted-foreground">Total tests completed</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Score</CardTitle>
-              <BarChart className="h-4 w-4 text-sky-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stats.avg}%</div>
-              <p className="text-xs text-muted-foreground">Across all tests</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Best Score</CardTitle>
-              <TrendingUp className="h-4 w-4 text-sky-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stats.best}%</div>
-              <p className="text-xs text-muted-foreground">Personal best</p>
-            </CardContent>
-          </Card>
+      {/* Quick Stats */}
+      <section className="py-8 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto grid md:grid-cols-4 gap-4">
+            <div className="bg-sky-50 rounded-lg p-6 text-center">
+              <Book className="w-8 h-8 text-sky-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">4</div>
+              <div className="text-sm text-gray-600">Subjects</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-6 text-center">
+              <FileText className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">0</div>
+              <div className="text-sm text-gray-600">Tests Taken</div>
+            </div>
+            <div className="bg-yellow-50 rounded-lg p-6 text-center">
+              <Clock className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">0h</div>
+              <div className="text-sm text-gray-600">Study Time</div>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-6 text-center">
+              <Award className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">0%</div>
+              <div className="text-sm text-gray-600">Avg Score</div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* Recent Tests */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Test Attempts</CardTitle>
-            <CardDescription>Your latest test performances</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {testAttempts.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600 mb-4">You haven't taken any tests yet</p>
-                <a href="/tests" className="text-sky-600 hover:underline">
-                  Browse available tests →
-                </a>
+      {/* Quick Actions */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Study Materials Card */}
+              <Link href="/materials">
+                <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg p-8 text-white hover:shadow-xl transition cursor-pointer">
+                  <Book className="w-12 h-12 mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">Study Materials</h3>
+                  <p className="mb-4">Access comprehensive notes and resources for all subjects</p>
+                  <Button variant="secondary" className="bg-white text-sky-600 hover:bg-gray-100">
+                    Browse Materials →
+                  </Button>
+                </div>
+              </Link>
+
+              {/* Practice Tests Card */}
+              <Link href="/tests">
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-8 text-white hover:shadow-xl transition cursor-pointer">
+                  <Target className="w-12 h-12 mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">Practice Tests</h3>
+                  <p className="mb-4">Take mock tests and improve your exam performance</p>
+                  <Button variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
+                    Start Testing →
+                  </Button>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Activity */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+            
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <TrendingUp className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 mb-4">No recent activity yet</p>
+              <p className="text-sm text-gray-500">
+                Start taking tests or accessing study materials to see your progress here
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* User Profile Info */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
+            
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Full Name</p>
+                  <p className="text-lg font-semibold text-gray-900">{user?.user_metadata?.name || 'Not provided'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Email</p>
+                  <p className="text-lg font-semibold text-gray-900">{user?.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Role</p>
+                  <p className="text-lg font-semibold text-gray-900 capitalize">{user?.user_metadata?.role || 'Student'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Account Status</p>
+                  <p className="text-lg font-semibold text-green-600">Active</p>
+                </div>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {testAttempts.slice(0, 5).map((attempt) => (
-                  <div key={attempt.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Test ID: {attempt.testId}</p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(attempt.submittedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-sky-600">{attempt.score}%</p>
-                      <p className="text-sm text-gray-600">
-                        {attempt.correctAnswers}/{attempt.totalQuestions} correct
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>
