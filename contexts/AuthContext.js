@@ -130,10 +130,9 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!user) throw new Error('No user logged in')
 
-      const { error } = await supabase
-        .from('users')
-        .update(updates)
-        .eq('id', user.id)
+      const { error } = await supabase.auth.updateUser({
+        data: updates
+      })
 
       if (error) throw error
 
@@ -149,9 +148,10 @@ export const AuthProvider = ({ children }) => {
   }
 
   const hasActiveSubscription = () => {
-    if (!user || user.subscription_type === 'free') return false
-    if (!user.subscription_expires) return false
-    return new Date(user.subscription_expires) > new Date()
+    if (!user || !user.user_metadata?.subscription_type) return false
+    if (user.user_metadata?.subscription_type === 'free') return false
+    if (!user.user_metadata?.subscription_expires) return false
+    return new Date(user.user_metadata.subscription_expires) > new Date()
   }
 
   const value = {
