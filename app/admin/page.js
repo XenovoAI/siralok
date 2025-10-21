@@ -503,11 +503,11 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t sticky bottom-0 bg-white pb-4">
                   <Button
                     type="submit"
                     disabled={uploading}
-                    className="flex-1 bg-sky-600 hover:bg-sky-700"
+                    className="flex-1 bg-sky-600 hover:bg-sky-700 order-1 sm:order-1"
                   >
                     {uploading ? (
                       <div className="flex items-center gap-2">
@@ -526,6 +526,7 @@ export default function AdminPanel() {
                     variant="outline"
                     onClick={closeModal}
                     disabled={uploading}
+                    className="flex-1 order-2 sm:order-2"
                   >
                     Cancel
                   </Button>
