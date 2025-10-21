@@ -250,22 +250,22 @@ export default function AdminPanel() {
       <Navbar />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Panel</h1>
             <p className="text-gray-600">Manage study materials</p>
           </div>
           <Button
             onClick={() => setShowAddModal(true)}
-            className="bg-sky-600 hover:bg-sky-700 flex items-center gap-2"
+            className="bg-sky-600 hover:bg-sky-700 flex items-center gap-2 w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Add Material
           </Button>
         </div>
 
-        {/* Materials List */}
-        <div className="bg-white rounded-lg shadow">
+        {/* Materials List - Desktop Table View */}
+        <div className="hidden lg:block bg-white rounded-lg shadow">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
@@ -296,7 +296,7 @@ export default function AdminPanel() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-900">{material.title}</div>
-                        <div className="text-sm text-gray-500">{material.description}</div>
+                        <div className="text-sm text-gray-500 line-clamp-2">{material.description}</div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2 py-1 bg-sky-100 text-sky-600 rounded text-sm">
@@ -329,6 +329,57 @@ export default function AdminPanel() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Materials List - Mobile Card View */}
+        <div className="lg:hidden space-y-4">
+          {materials.length === 0 ? (
+            <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+              No materials yet. Click "Add Material" to get started.
+            </div>
+          ) : (
+            materials.map((material) => (
+              <div key={material.id} className="bg-white rounded-lg shadow p-4">
+                <div className="flex gap-4">
+                  <img
+                    src={material.thumbnail_url}
+                    alt={material.title}
+                    className="w-20 h-24 sm:w-24 sm:h-32 object-cover rounded flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 mb-1 line-clamp-2">{material.title}</h3>
+                    <p className="text-sm text-gray-500 mb-2 line-clamp-2">{material.description}</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2 py-1 bg-sky-100 text-sky-600 rounded text-xs font-medium">
+                        {material.subject}
+                      </span>
+                      <span className="text-xs text-gray-500">{material.downloads || 0} downloads</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEdit(material)}
+                        className="flex-1"
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(material)}
+                        className="flex-1 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
