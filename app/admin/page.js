@@ -385,19 +385,21 @@ export default function AdminPanel() {
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {editingMaterial ? 'Edit Material' : 'Add New Material'}
-                </h2>
-                <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
-                  <X className="w-6 h-6" />
-                </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full my-4 sm:my-8">
+            <div className="max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="p-4 sm:p-6 sticky top-0 bg-white border-b z-10">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                    {editingMaterial ? 'Edit Material' : 'Add New Material'}
+                  </h2>
+                  <button onClick={closeModal} className="text-gray-500 hover:text-gray-700 p-1">
+                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
+                </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 p-4 sm:p-6 pt-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                   <input
