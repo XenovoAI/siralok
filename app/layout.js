@@ -80,7 +80,8 @@ export default function RootLayout({ children }) {
     name: 'SIRCBSE',
     description: 'Best NEET & JEE Preparation Platform with affordable question banks and study materials',
     url: 'https://www.sircbse.com',
-    logo: 'https://www.sircbse.com/logo.png',
+    logo: 'https://www.sircbse.com/logo.jpg',
+    image: 'https://www.sircbse.com/logo.jpg',
     founder: [
       {
         '@type': 'Person',
