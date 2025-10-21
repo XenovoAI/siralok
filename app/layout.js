@@ -59,9 +59,54 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  // Structured Data (JSON-LD) for SEO
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: 'SIRCBSE',
+    description: 'Best NEET & JEE Preparation Platform with affordable question banks and study materials',
+    url: 'https://www.sircbse.com',
+    logo: 'https://www.sircbse.com/logo.png',
+    founder: [
+      {
+        '@type': 'Person',
+        name: 'Alok Kumar',
+      },
+      {
+        '@type': 'Person',
+        name: 'Harshit Patidar',
+      },
+    ],
+    sameAs: [
+      'https://www.facebook.com/sircbse',
+      'https://www.instagram.com/sircbse',
+      'https://twitter.com/sircbse',
+      'https://www.youtube.com/@sircbse',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Support',
+      email: 'support@sircbse.com',
+    },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'INR',
+      lowPrice: '29',
+      highPrice: '499',
+      offerCount: '100',
+    },
+  }
+
   return (
     <html lang="en">
       <head>
+        {/* Structured Data */}
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="afterInteractive">
           {`
