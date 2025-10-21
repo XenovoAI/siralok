@@ -118,37 +118,56 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4">
-            <Link href="/" className="block text-gray-700">Home</Link>
-            <Link href="/materials" className="block text-gray-700">Study Materials</Link>
-            <Link href="/tests" className="block text-gray-700">Tests</Link>
-            <Link href="/about" className="block text-gray-700">About</Link>
-            <Link href="/contact" className="block text-gray-700">Contact</Link>
-            {loading ? (
-              <div className="w-full h-10 animate-pulse bg-gray-200 rounded"></div>
-            ) : user ? (
-              <>
-                <span className="block text-sm text-gray-600">
-                  Welcome, {user.user_metadata?.name || user.email}
-                </span>
-                <Link href="/dashboard">
-                  <Button variant="outline" className="w-full">Dashboard</Button>
-                </Link>
-                <Button onClick={handleLogout} variant="outline" className="w-full flex items-center justify-center gap-2">
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="outline" className="w-full">Login</Button>
-                </Link>
-                <Link href="/register">
-                  <Button className="w-full bg-sky-600 hover:bg-sky-700">Register</Button>
-                </Link>
-              </>
-            )}
+          <div className="md:hidden py-4 space-y-4 border-t">
+            <Link href="/" className="block text-gray-700 hover:text-sky-600 py-2" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+            <Link href="/materials" className="block text-gray-700 hover:text-sky-600 py-2" onClick={() => setMobileMenuOpen(false)}>Study Materials</Link>
+            <Link href="/tests" className="block text-gray-700 hover:text-sky-600 py-2" onClick={() => setMobileMenuOpen(false)}>Tests</Link>
+            <Link href="/about" className="block text-gray-700 hover:text-sky-600 py-2" onClick={() => setMobileMenuOpen(false)}>About</Link>
+            <Link href="/contact" className="block text-gray-700 hover:text-sky-600 py-2" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+            
+            <div className="border-t pt-4">
+              {loading ? (
+                <div className="w-full h-10 animate-pulse bg-gray-200 rounded"></div>
+              ) : user ? (
+                <>
+                  <div className="mb-3 pb-3 border-b">
+                    <span className="block text-sm text-gray-600">
+                      Welcome, <span className="font-medium">{user.user_metadata?.name || user.email?.split('@')[0]}</span>
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" className="w-full justify-start">Dashboard</Button>
+                    </Link>
+                    {user.user_metadata?.role === 'admin' && (
+                      <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
+                        <Button className="w-full bg-sky-600 hover:bg-sky-700 justify-start">Admin Panel</Button>
+                      </Link>
+                    )}
+                    <Button 
+                      onClick={() => {
+                        handleLogout()
+                        setMobileMenuOpen(false)
+                      }} 
+                      variant="outline" 
+                      className="w-full flex items-center justify-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Login</Button>
+                  </Link>
+                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full bg-sky-600 hover:bg-sky-700">Register</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
