@@ -55,33 +55,17 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
         options: {
-          data: userData
+          data: {
+            ...userData,
+            role: 'student' // Default role
+          }
         }
       })
 
       if (error) throw error
 
       if (data.user) {
-        // Insert into users table
-        const { error: insertError } = await supabase
-          .from('users')
-          .insert([
-            {
-              id: data.user.id,
-              email: email,
-              password: '', // Password is managed by Supabase Auth
-              full_name: userData.full_name,
-              phone: userData.phone || null,
-              exam_type: userData.exam_type || null,
-              class_year: userData.class_year || null,
-              subscription_type: 'free',
-              created_at: new Date().toISOString()
-            }
-          ])
-
-        if (insertError) throw insertError
-
-        toast.success('Account created successfully! Please check your email to verify.')
+        toast.success('Account created successfully!')
         return { success: true, user: data.user }
       }
     } catch (error) {
@@ -101,12 +85,6 @@ export const AuthProvider = ({ children }) => {
       if (error) throw error
 
       if (data.user) {
-        // Update last login
-        await supabase
-          .from('users')
-          .update({ last_login: new Date().toISOString() })
-          .eq('id', data.user.id)
-
         toast.success('Logged in successfully!')
         return { success: true, user: data.user }
       }
