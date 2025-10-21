@@ -164,7 +164,7 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     hasActiveSubscription,
     isSubscribed: hasActiveSubscription(),
-    subscriptionType: user?.subscription_type || 'free'
+    subscriptionType: user?.user_metadata?.subscription_type || 'free'
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
