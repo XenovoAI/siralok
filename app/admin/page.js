@@ -379,75 +379,22 @@ export default function AdminPanel() {
           </Button>
         </div>
 
-        {/* Materials List - Desktop Table View */}
-        <div className="hidden lg:block bg-white rounded-lg shadow">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thumbnail</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Downloads</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {materials.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                      No materials yet. Click "Add Material" to get started.
-                    </td>
-                  </tr>
-                ) : (
-                  materials.map((material) => (
-                    <tr key={material.id}>
-                      <td className="px-6 py-4">
-                        <img
-                          src={material.thumbnail_url}
-                          alt={material.title}
-                          className="w-16 h-20 object-cover rounded"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">{material.title}</div>
-                        <div className="text-sm text-gray-500 line-clamp-2">{material.description}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="px-2 py-1 bg-sky-100 text-sky-600 rounded text-sm">
-                          {material.subject}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-gray-500">{material.downloads || 0}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEdit(material)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDelete(material)}
-                            className="text-red-600 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        {/* Materials List - Unified Card View */}
+        {materials.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No materials yet</h3>
+            <p className="text-gray-600 mb-6">Get started by adding your first study material</p>
+            <Button
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-lg"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add First Material
+            </Button>
           </div>
-        </div>
-
-        {/* Materials List - Mobile Card View */}
-        <div className="lg:hidden space-y-4">
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {materials.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
               No materials yet. Click "Add Material" to get started.
