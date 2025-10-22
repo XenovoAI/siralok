@@ -394,55 +394,64 @@ export default function AdminPanel() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {materials.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-              No materials yet. Click "Add Material" to get started.
-            </div>
-          ) : (
-            materials.map((material) => (
-              <div key={material.id} className="bg-white rounded-lg shadow p-4">
-                <div className="flex gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {materials.map((material) => (
+              <div key={material.id} className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+                {/* Thumbnail */}
+                <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                   <img
                     src={material.thumbnail_url}
                     alt={material.title}
-                    className="w-20 h-24 sm:w-24 sm:h-32 object-cover rounded flex-shrink-0"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-gray-900 mb-1 line-clamp-2">{material.title}</h3>
-                    <p className="text-sm text-gray-500 mb-2 line-clamp-2">{material.description}</p>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2 py-1 bg-sky-100 text-sky-600 rounded text-xs font-medium">
-                        {material.subject}
-                      </span>
-                      <span className="text-xs text-gray-500">{material.downloads || 0} downloads</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEdit(material)}
-                        className="flex-1"
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleDelete(material)}
-                        className="flex-1 text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Delete
-                      </Button>
-                    </div>
+                  {/* Subject badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-sky-600 rounded-lg text-xs font-bold shadow-md">
+                      {material.subject}
+                    </span>
+                  </div>
+                  {/* Downloads badge */}
+                  <div className="absolute top-3 right-3">
+                    <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-700 rounded-lg text-xs font-semibold shadow-md flex items-center gap-1">
+                      <Download className="w-3 h-3" />
+                      {material.downloads || 0}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-sky-600 transition-colors">
+                    {material.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    {material.description}
+                  </p>
+
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEdit(material)}
+                      className="flex-1 hover:bg-sky-50 hover:text-sky-600 hover:border-sky-300"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDelete(material)}
+                      className="flex-1 text-red-600 hover:bg-red-50 hover:border-red-300"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Modal */}
