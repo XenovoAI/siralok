@@ -6,7 +6,10 @@ import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
-import { Upload, Trash2, Edit, Plus, X, FileText, Image as ImageIcon } from 'lucide-react'
+import { 
+  Upload, Trash2, Edit, Plus, X, FileText, Image as ImageIcon, 
+  Users, Download, BookOpen, TrendingUp, Eye, BarChart3 
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminPanel() {
@@ -17,6 +20,12 @@ export default function AdminPanel() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingMaterial, setEditingMaterial] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalDownloads: 0,
+    totalMaterials: 0,
+    recentDownloads: 0
+  })
   
   const [formData, setFormData] = useState({
     title: '',
