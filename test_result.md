@@ -339,6 +339,18 @@ frontend:
       - working: true
         agent: "main"
         comment: "Created comprehensive Privacy Policy page with 14 sections covering data collection, usage, sharing, security, retention, user rights, cookies, children's privacy, and contact information. Follows site design with orange accent, Navbar, and Footer components. Tested with curl - page renders correctly."
+  
+  - task: "Download Management System with Authentication"
+    implemented: true
+    working: "NA"
+    file: "/app/app/materials/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented complete download management system. Features: 1) Authentication required for all downloads (view and download buttons show lock icon when not logged in), 2) Redirect to login with returnUrl parameter when unauthenticated user tries to download, 3) One download count per user per material (enforced via Supabase unique constraint), 4) Download tracking in Supabase material_downloads table with RLS policies, 5) Auto-redirect after login/signup to original page. Files modified: materials/page.js, login/page.js, register/page.js. Created material_downloads_migration.sql for user to run in Supabase. Needs testing: login redirect flow, download tracking, duplicate download prevention."
 
 metadata:
   created_by: "main_agent"
