@@ -17,6 +17,8 @@ export default function MaterialsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('All')
   const [viewingPdf, setViewingPdf] = useState(null)
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
 
   const subjects = ['All', 'Physics', 'Chemistry', 'Biology', 'Mathematics']
 
