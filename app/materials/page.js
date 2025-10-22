@@ -290,7 +290,7 @@ export default function MaterialsPage() {
                           className="flex-1 flex items-center justify-center gap-2"
                           size="sm"
                         >
-                          <Eye className="w-4 h-4" />
+                          {!user ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           View
                         </Button>
                         <Button
@@ -298,7 +298,7 @@ export default function MaterialsPage() {
                           className="flex-1 bg-sky-600 hover:bg-sky-700 flex items-center justify-center gap-2"
                           size="sm"
                         >
-                          <Download className="w-4 h-4" />
+                          {!user ? <Lock className="w-4 h-4" /> : <Download className="w-4 h-4" />}
                           Download
                         </Button>
                       </div>
