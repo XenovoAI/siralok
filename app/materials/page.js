@@ -72,8 +72,8 @@ export default function MaterialsPage() {
   const handleDownload = async (material) => {
     // Check if user is logged in
     if (!user) {
-      toast.error('Please login to download materials')
-      router.push('/login?returnUrl=/materials')
+      setPendingAction({ type: 'download', material })
+      setShowAuthModal(true)
       return
     }
 
@@ -123,7 +123,7 @@ export default function MaterialsPage() {
       window.open(material.pdf_url, '_blank')
       
       if (isNewDownload) {
-        toast.success('Download started!')
+        toast.success('🎉 Download started!')
       } else {
         toast.success('Download started! (already counted)')
       }
