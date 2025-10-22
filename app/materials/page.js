@@ -6,8 +6,9 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import AuthModal from '@/components/AuthModal'
 import { Button } from '@/components/ui/button'
-import { Search, Download, Eye, BookOpen, Filter, Lock } from 'lucide-react'
+import { Search, Download, Eye, BookOpen, Filter, Lock, TrendingUp, Award } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function MaterialsPage() {
