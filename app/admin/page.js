@@ -85,6 +85,53 @@ export default function AdminPanel() {
     }
   }
 
+  const loadStats = async () => {
+    try {
+      // Get total users count from auth.users
+      const { count: usersCount, error: usersError } = await supabase
+        .from('auth.users')
+        .select('*', { count: 'exact', head: true })
+
+      // Get total downloads sum from materials
+      const { data: materialsData, error: materialsError } = await supabase
+        .from('materials')
+        .select('downloads')
+
+      const totalDownloads = materialsData?.reduce((sum, m) => sum + (m.downloads || 0), 0) || 0
+
+      // Get total materials count
+      const { count: materialsCount, error: materialsCountError } = await supabase
+        .from('materials')
+        .select('*', { count: 'exact', head: true })
+
+      // Get recent downloads (last 7 days) - if material_downloads table exists
+      let recentDownloads = 0
+      try {
+        const sevenDaysAgo = new Date()
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+        
+        const { count: recentCount } = await supabase
+          .from('material_downloads')
+          .select('*', { count: 'exact', head: true })
+          .gte('downloaded_at', sevenDaysAgo.toISOString())
+        
+        recentDownloads = recentCount || 0
+      } catch (err) {
+        // Table might not exist yet, that's okay
+        console.log('material_downloads table not found or empty')
+      }
+
+      setStats({
+        totalUsers: usersCount || 0,
+        totalDownloads,
+        totalMaterials: materialsCount || 0,
+        recentDownloads
+      })
+    } catch (error) {
+      console.error('Error loading stats:', error)
+    }
+  }
+
   const handleFileChange = (e, type) => {
     const file = e.target.files[0]
     if (!file) return
