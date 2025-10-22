@@ -95,11 +95,11 @@ export default function RegisterPage() {
       // Check if email confirmation is required
       if (data?.user && !data?.session) {
         toast.success('Registration successful! Please check your email to confirm your account.')
-        router.push('/login')
+        router.push(`/login${returnUrl !== '/' ? `?returnUrl=${returnUrl}` : ''}`)
       } else {
         // Auto-login successful (email confirmation disabled)
         toast.success('Registration successful! Welcome to SIR CBSE!')
-        router.push('/dashboard')
+        router.push(returnUrl !== '/' ? returnUrl : '/dashboard')
       }
     } catch (error) {
       console.error('Registration error:', error)
