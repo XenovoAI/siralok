@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -10,13 +10,23 @@ import { toast } from 'sonner'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [returnUrl, setReturnUrl] = useState('/')
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
   const [errors, setErrors] = useState({})
+
+  useEffect(() => {
+    // Get returnUrl from query params
+    const url = searchParams.get('returnUrl')
+    if (url) {
+      setReturnUrl(url)
+    }
+  }, [searchParams])
 
   const validateForm = () => {
     const newErrors = {}
