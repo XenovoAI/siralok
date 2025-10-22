@@ -75,57 +75,61 @@ export default function MaterialsPage() {
     }
 
     try {
-      // Get Supabase session to get JWT token
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        toast.error('Please login to download materials')
-        router.push('/login?returnUrl=/materials')
-        return
-      }
+      // Check if user has already downloaded this material
+      const { data: existingDownload } = await supabase
+        .from('material_downloads')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('material_id', material.id)
+        .single()
 
-      // Track download in MongoDB backend
-      const trackResponse = await fetch('/api/material-downloads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({
-          materialId: material.id,
-          materialTitle: material.title,
-          materialType: 'free'
-        })
-      })
+      let isNewDownload = !existingDownload
 
-      const trackData = await trackResponse.json()
+      // If not already downloaded, create download record
+      if (isNewDownload) {
+        const { error: insertError } = await supabase
+          .from('material_downloads')
+          .insert({
+            user_id: user.id,
+            user_email: user.email,
+            material_id: material.id,
+            material_title: material.title,
+            material_type: 'free'
+          })
 
-      if (!trackResponse.ok) {
-        throw new Error(trackData.error || 'Failed to track download')
-      }
+        if (insertError) {
+          console.error('Error tracking download:', insertError)
+          // Don't block download if tracking fails
+          isNewDownload = false
+        }
 
-      // Update download counter in Supabase only if it's a new download
-      if (!trackData.alreadyDownloaded) {
-        const { error } = await supabase
-          .from('materials')
-          .update({ downloads: (material.downloads || 0) + 1 })
-          .eq('id', material.id)
+        // Update download counter only for new downloads
+        if (!insertError) {
+          const { error: updateError } = await supabase
+            .from('materials')
+            .update({ downloads: (material.downloads || 0) + 1 })
+            .eq('id', material.id)
 
-        if (error) throw error
-        
-        toast.success('Download started!')
-      } else {
-        toast.success('Download started! (already counted)')
+          if (updateError) {
+            console.error('Error updating download count:', updateError)
+          }
+        }
       }
 
       // Trigger download
       window.open(material.pdf_url, '_blank')
       
+      if (isNewDownload) {
+        toast.success('Download started!')
+      } else {
+        toast.success('Download started! (already counted)')
+      }
+      
       // Refresh materials to update counter
       loadMaterials()
     } catch (error) {
       console.error('Error downloading:', error)
-      toast.error(error.message || 'Failed to download')
+      toast.error('Failed to download')
     }
   }
 
