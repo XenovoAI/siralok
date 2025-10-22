@@ -40,6 +40,7 @@ export default function AdminPanel() {
   useEffect(() => {
     checkAdmin()
     loadMaterials()
+    loadStats()
   }, [])
 
   const checkAdmin = async () => {
