@@ -189,34 +189,81 @@ export default function MaterialsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="py-12 bg-gradient-to-b from-sky-50 to-white">
-        <div className="container mx-auto px-4">
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
+
+      {/* Hero Section - Enhanced */}
+      <section className="relative py-16 bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-600 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Study <span className="text-sky-600">Materials</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 border border-white/30">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-sm font-medium">1000+ Study Materials Available</span>
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              Premium Study Materials
+              <br />
+              <span className="text-sky-200">for JEE & NEET</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Access comprehensive study materials, notes, and books for JEE and NEET preparation
+            
+            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+              Access comprehensive study materials, detailed notes, and quality books curated by experts
             </p>
 
-            {/* Search Bar */}
+            {/* Stats */}
+            <div className="flex flex-wrap justify-center gap-8 mb-10">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">1000+</div>
+                <div className="text-sm text-white/80">Study Materials</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">50K+</div>
+                <div className="text-sm text-white/80">Students</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">95%</div>
+                <div className="text-sm text-white/80">Success Rate</div>
+              </div>
+            </div>
+
+            {/* Search Bar - Enhanced */}
             <div className="max-w-2xl mx-auto">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search materials by title or description..."
+                  placeholder="Search for materials, subjects, topics..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  className="w-full pl-14 pr-6 py-4 bg-white rounded-2xl shadow-xl focus:outline-none focus:ring-4 focus:ring-white/30 text-gray-900 placeholder-gray-400 text-lg"
                 />
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 80C1200 80 1320 70 1380 65L1440 60V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+          </svg>
         </div>
       </section>
 
