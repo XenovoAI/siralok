@@ -303,18 +303,76 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Manage study materials and monitor statistics</p>
+        </div>
+
+        {/* Dashboard Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+          {/* Total Users */}
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <Users className="w-6 h-6" />
+              </div>
+              <TrendingUp className="w-5 h-5 opacity-80" />
+            </div>
+            <h3 className="text-sm font-medium opacity-90 mb-1">Total Users</h3>
+            <p className="text-3xl font-bold">{stats.totalUsers}</p>
+          </div>
+
+          {/* Total Downloads */}
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <Download className="w-6 h-6" />
+              </div>
+              <BarChart3 className="w-5 h-5 opacity-80" />
+            </div>
+            <h3 className="text-sm font-medium opacity-90 mb-1">Total Downloads</h3>
+            <p className="text-3xl font-bold">{stats.totalDownloads}</p>
+          </div>
+
+          {/* Total Materials */}
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <FileText className="w-5 h-5 opacity-80" />
+            </div>
+            <h3 className="text-sm font-medium opacity-90 mb-1">Total Materials</h3>
+            <p className="text-3xl font-bold">{stats.totalMaterials}</p>
+          </div>
+
+          {/* Recent Downloads (7 days) */}
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <Eye className="w-5 h-5 opacity-80" />
+            </div>
+            <h3 className="text-sm font-medium opacity-90 mb-1">Recent (7 days)</h3>
+            <p className="text-3xl font-bold">{stats.recentDownloads}</p>
+          </div>
+        </div>
+
+        {/* Materials Section Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Panel</h1>
-            <p className="text-gray-600">Manage study materials</p>
+            <h2 className="text-2xl font-bold text-gray-900">Study Materials</h2>
+            <p className="text-gray-600 text-sm">Manage and organize all materials</p>
           </div>
           <Button
             onClick={() => setShowAddModal(true)}
-            className="bg-sky-600 hover:bg-sky-700 flex items-center gap-2 w-full sm:w-auto"
+            className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl flex items-center gap-2 w-full sm:w-auto transition-all"
           >
             <Plus className="w-4 h-4" />
             Add Material
