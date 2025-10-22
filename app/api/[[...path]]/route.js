@@ -459,6 +459,108 @@ async function handleRoute(request, { params }) {
       return handleCORS(NextResponse.json(cleanedUsers))
     }
 
+    // ============ MATERIAL DOWNLOADS ROUTES ============
+    
+    // Track material download - POST /api/material-downloads
+    if (route === '/material-downloads' && method === 'POST') {
+      const userData = verifyToken(request)
+      if (!userData) {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        ))
+      }
+
+      const body = await request.json()
+      const { materialId, materialTitle, materialType = 'free' } = body
+
+      if (!materialId) {
+        return handleCORS(NextResponse.json(
+          { error: "Material ID is required" },
+          { status: 400 }
+        ))
+      }
+
+      // Check if user has already downloaded this material
+      const existingDownload = await db.collection('material_downloads').findOne({
+        userId: userData.userId,
+        materialId
+      })
+
+      if (existingDownload) {
+        // User already downloaded this material - allow re-download but don't count
+        return handleCORS(NextResponse.json({
+          message: "Material already downloaded by user",
+          alreadyDownloaded: true,
+          download: existingDownload
+        }))
+      }
+
+      // Create new download record
+      const download = {
+        id: uuidv4(),
+        userId: userData.userId,
+        userEmail: userData.email,
+        materialId,
+        materialTitle,
+        materialType,
+        downloadedAt: new Date()
+      }
+
+      await db.collection('material_downloads').insertOne(download)
+      const { _id, ...cleanedDownload } = download
+
+      return handleCORS(NextResponse.json({
+        message: "Download tracked successfully",
+        alreadyDownloaded: false,
+        download: cleanedDownload
+      }))
+    }
+
+    // Get user's download history - GET /api/material-downloads
+    if (route === '/material-downloads' && method === 'GET') {
+      const userData = verifyToken(request)
+      if (!userData) {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        ))
+      }
+
+      const downloads = await db.collection('material_downloads')
+        .find({ userId: userData.userId })
+        .sort({ downloadedAt: -1 })
+        .toArray()
+      
+      const cleanedDownloads = downloads.map(({ _id, ...rest }) => rest)
+      return handleCORS(NextResponse.json(cleanedDownloads))
+    }
+
+    // Get download stats - GET /api/material-downloads/stats (Admin only)
+    if (route === '/material-downloads/stats' && method === 'GET') {
+      const userData = verifyToken(request)
+      if (!userData || userData.role !== 'admin') {
+        return handleCORS(NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 403 }
+        ))
+      }
+
+      const totalDownloads = await db.collection('material_downloads').countDocuments()
+      const uniqueUsers = await db.collection('material_downloads').distinct('userId')
+      const topMaterials = await db.collection('material_downloads').aggregate([
+        { $group: { _id: '$materialId', title: { $first: '$materialTitle' }, count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]).toArray()
+
+      return handleCORS(NextResponse.json({
+        totalDownloads,
+        uniqueUsers: uniqueUsers.length,
+        topMaterials
+      }))
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` },
