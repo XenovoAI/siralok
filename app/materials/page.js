@@ -314,57 +314,71 @@ export default function MaterialsPage() {
                 {filteredMaterials.map((material) => (
                   <div
                     key={material.id}
-                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition group"
+                    className="group bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-sky-200"
                   >
                     {/* Thumbnail */}
-                    <div className="relative h-64 bg-gray-100 overflow-hidden">
+                    <div className="relative h-52 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                       <img
                         src={material.thumbnail_url}
                         alt={material.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute top-2 right-2">
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${getSubjectColor(material.subject)}`}>
+                      {/* Overlay gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      {/* Subject badge */}
+                      <div className="absolute top-3 right-3">
+                        <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg backdrop-blur-sm ${getSubjectColor(material.subject)}`}>
                           {material.subject}
                         </span>
+                      </div>
+
+                      {/* Download count badge */}
+                      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
+                        <TrendingUp className="w-3.5 h-3.5 text-sky-600" />
+                        <span className="text-xs font-semibold text-gray-800">{material.downloads || 0} downloads</span>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                    <div className="p-5">
+                      <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-sky-600 transition-colors">
                         {material.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      <p className="text-sm text-gray-600 mb-5 line-clamp-2 leading-relaxed">
                         {material.description}
                       </p>
-
-                      {/* Stats */}
-                      <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
-                        <Download className="w-4 h-4" />
-                        <span>{material.downloads || 0} downloads</span>
-                      </div>
 
                       {/* Actions */}
                       <div className="flex gap-2">
                         <Button
                           onClick={() => handleView(material)}
                           variant="outline"
-                          className="flex-1 flex items-center justify-center gap-2"
+                          className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
                           size="sm"
                         >
                           {!user ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          View
+                          <span className="hidden sm:inline">View</span>
                         </Button>
                         <Button
                           onClick={() => handleDownload(material)}
-                          className="flex-1 bg-sky-600 hover:bg-sky-700 flex items-center justify-center gap-2"
+                          className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
                           size="sm"
                         >
                           {!user ? <Lock className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                          Download
+                          <span className="font-semibold">Download</span>
                         </Button>
                       </div>
+
+                      {/* Login prompt for non-logged users */}
+                      {!user && (
+                        <div className="mt-3 text-center">
+                          <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <Lock className="w-3 h-3" />
+                            <span>Login required to access</span>
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
