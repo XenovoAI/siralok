@@ -73,7 +73,9 @@ export default function LoginPage() {
       if (error) throw error
 
       toast.success('Login successful! Welcome back!')
-      router.push('/dashboard')
+      
+      // Redirect to returnUrl or dashboard
+      router.push(returnUrl !== '/' ? returnUrl : '/dashboard')
     } catch (error) {
       console.error('Login error:', error)
       toast.error('Invalid email or password')
