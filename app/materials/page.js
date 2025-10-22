@@ -139,11 +139,24 @@ export default function MaterialsPage() {
   const handleView = (material) => {
     // Check if user is logged in
     if (!user) {
-      toast.error('Please login to view materials')
-      router.push('/login?returnUrl=/materials')
+      setPendingAction({ type: 'view', material })
+      setShowAuthModal(true)
       return
     }
     setViewingPdf(material)
+  }
+
+  const handleAuthSuccess = () => {
+    // Execute pending action after successful auth
+    if (pendingAction) {
+      if (pendingAction.type === 'download') {
+        // Reload page to get user context, then download will work
+        window.location.reload()
+      } else if (pendingAction.type === 'view') {
+        window.location.reload()
+      }
+      setPendingAction(null)
+    }
   }
 
   const closePdfViewer = () => {
