@@ -130,6 +130,12 @@ export default function MaterialsPage() {
   }
 
   const handleView = (material) => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error('Please login to view materials')
+      router.push('/login?returnUrl=/materials')
+      return
+    }
     setViewingPdf(material)
   }
 
