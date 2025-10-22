@@ -67,24 +67,65 @@ export default function MaterialsPage() {
   }
 
   const handleDownload = async (material) => {
-    try {
-      // Increment download counter
-      const { error } = await supabase
-        .from('materials')
-        .update({ downloads: (material.downloads || 0) + 1 })
-        .eq('id', material.id)
+    // Check if user is logged in
+    if (!user) {
+      toast.error('Please login to download materials')
+      router.push('/login?returnUrl=/materials')
+      return
+    }
 
-      if (error) throw error
+    try {
+      // Get Supabase session to get JWT token
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        toast.error('Please login to download materials')
+        router.push('/login?returnUrl=/materials')
+        return
+      }
+
+      // Track download in MongoDB backend
+      const trackResponse = await fetch('/api/material-downloads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          materialId: material.id,
+          materialTitle: material.title,
+          materialType: 'free'
+        })
+      })
+
+      const trackData = await trackResponse.json()
+
+      if (!trackResponse.ok) {
+        throw new Error(trackData.error || 'Failed to track download')
+      }
+
+      // Update download counter in Supabase only if it's a new download
+      if (!trackData.alreadyDownloaded) {
+        const { error } = await supabase
+          .from('materials')
+          .update({ downloads: (material.downloads || 0) + 1 })
+          .eq('id', material.id)
+
+        if (error) throw error
+        
+        toast.success('Download started!')
+      } else {
+        toast.success('Download started! (already counted)')
+      }
 
       // Trigger download
       window.open(material.pdf_url, '_blank')
-      toast.success('Download started!')
       
       // Refresh materials to update counter
       loadMaterials()
     } catch (error) {
       console.error('Error downloading:', error)
-      toast.error('Failed to download')
+      toast.error(error.message || 'Failed to download')
     }
   }
 
