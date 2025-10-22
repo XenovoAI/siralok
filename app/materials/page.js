@@ -18,6 +18,8 @@ export default function MaterialsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('All')
   const [viewingPdf, setViewingPdf] = useState(null)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [pendingAction, setPendingAction] = useState(null)
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
 
