@@ -1,15 +1,10 @@
 import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import LoginClient from './login-client';
 
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <LoginContent />
+      <LoginClient />
     </Suspense>
   );
-}
-
-function LoginContent() {
-  const searchParams = useSearchParams();
-  // ...existing code...
 }

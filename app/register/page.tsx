@@ -1,15 +1,10 @@
 import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import RegisterClient from './register-client';
 
 export default function RegisterPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <RegisterContent />
+      <RegisterClient />
     </Suspense>
   );
-}
-
-function RegisterContent() {
-  const searchParams = useSearchParams();
-  // ...existing code...
 }
