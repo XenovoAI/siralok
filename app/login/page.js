@@ -176,7 +176,10 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Don't have an account?{' '}
-              <Link href="/register" className="text-sky-600 hover:text-sky-700 font-semibold">
+              <Link 
+                href={`/register${returnUrl !== '/' ? `?returnUrl=${returnUrl}` : ''}`} 
+                className="text-sky-600 hover:text-sky-700 font-semibold"
+              >
                 Register
               </Link>
             </p>
