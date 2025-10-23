@@ -33,7 +33,7 @@ export default function MaterialsPage() {
 
   useEffect(() => {
     filterMaterials()
-  }, [materials, searchQuery, selectedSubject])
+  }, [materials, searchQuery, selectedSubject, selectedClass])
 
   const loadMaterials = async () => {
     try {
