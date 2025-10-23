@@ -516,6 +516,20 @@ export default function AdminPanel() {
                 </div>
 
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Class *</label>
+                  <select
+                    value={formData.class}
+                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    required
+                  >
+                    {classes.map((classItem) => (
+                      <option key={classItem} value={classItem}>{classItem}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     PDF File {!editingMaterial && '*'}
                   </label>
