@@ -17,6 +17,7 @@ export default function MaterialsPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('All')
+  const [selectedClass, setSelectedClass] = useState('All')
   const [viewingPdf, setViewingPdf] = useState(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [pendingAction, setPendingAction] = useState(null)
@@ -24,6 +25,7 @@ export default function MaterialsPage() {
   const router = useRouter()
 
   const subjects = ['All', 'Physics', 'Chemistry', 'Biology', 'Mathematics']
+  const classes = ['All', 'Class 10', 'Class 11', 'Class 12', 'Dropper']
 
   useEffect(() => {
     loadMaterials()
