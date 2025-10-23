@@ -410,12 +410,22 @@ export default function AdminPanel() {
                     alt={material.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  {/* Class badge - Top Left */}
+                  {material.class && (
+                    <div className="absolute top-3 left-3">
+                      <span className="px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg text-xs font-bold shadow-md">
+                        {material.class}
+                      </span>
+                    </div>
+                  )}
+                  
                   {/* Subject badge */}
-                  <div className="absolute top-3 left-3">
+                  <div className={`absolute ${material.class ? 'top-14' : 'top-3'} left-3`}>
                     <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-sky-600 rounded-lg text-xs font-bold shadow-md">
                       {material.subject}
                     </span>
                   </div>
+                  
                   {/* Downloads badge */}
                   <div className="absolute top-3 right-3">
                     <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-700 rounded-lg text-xs font-semibold shadow-md flex items-center gap-1">
