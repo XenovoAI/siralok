@@ -258,6 +258,7 @@ export default function AdminPanel() {
       title: material.title,
       description: material.description,
       subject: material.subject,
+      class: material.class || 'Class 11',
       pdfFile: null,
       thumbnailFile: null
     })
