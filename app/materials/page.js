@@ -277,20 +277,44 @@ export default function MaterialsPage() {
       {/* Filter Section - Enhanced */}
       <section className="py-8">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            {subjects.map((subject) => (
-              <button
-                key={subject}
-                onClick={() => setSelectedSubject(subject)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
-                  selectedSubject === subject
-                    ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white scale-105 shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                }`}
-              >
-                {subject}
-              </button>
-            ))}
+          {/* Class Filter */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Class</h3>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {classes.map((classItem) => (
+                <button
+                  key={classItem}
+                  onClick={() => setSelectedClass(classItem)}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
+                    selectedClass === classItem
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white scale-105 shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  }`}
+                >
+                  {classItem}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Subject Filter */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Subject</h3>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {subjects.map((subject) => (
+                <button
+                  key={subject}
+                  onClick={() => setSelectedSubject(subject)}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
+                    selectedSubject === subject
+                      ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white scale-105 shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  }`}
+                >
+                  {subject}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
