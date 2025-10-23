@@ -357,6 +357,15 @@ export default function MaterialsPage() {
                       {/* Overlay gradient */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       
+                      {/* Class badge - Top Left */}
+                      {material.class && (
+                        <div className="absolute top-3 left-3">
+                          <span className="px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg text-xs font-bold shadow-lg">
+                            {material.class}
+                          </span>
+                        </div>
+                      )}
+
                       {/* Subject badge */}
                       <div className="absolute top-3 right-3">
                         <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg backdrop-blur-sm ${getSubjectColor(material.subject)}`}>
