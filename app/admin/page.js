@@ -31,11 +31,13 @@ export default function AdminPanel() {
     title: '',
     description: '',
     subject: 'Physics',
+    class: 'Class 11',
     pdfFile: null,
     thumbnailFile: null
   })
 
   const subjects = ['Physics', 'Chemistry', 'Biology', 'Mathematics']
+  const classes = ['Class 10', 'Class 11', 'Class 12', 'Dropper']
 
   useEffect(() => {
     checkAdmin()
