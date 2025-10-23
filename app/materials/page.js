@@ -55,6 +55,11 @@ export default function MaterialsPage() {
   const filterMaterials = () => {
     let filtered = materials
 
+    // Filter by class
+    if (selectedClass !== 'All') {
+      filtered = filtered.filter(m => m.class === selectedClass)
+    }
+
     // Filter by subject
     if (selectedSubject !== 'All') {
       filtered = filtered.filter(m => m.subject === selectedSubject)
