@@ -204,6 +204,7 @@ export default function AdminPanel() {
         title: formData.title,
         description: formData.description,
         subject: formData.subject,
+        class: formData.class,
         pdf_url: pdfUrl,
         thumbnail_url: thumbnailUrl,
         downloads: editingMaterial?.downloads || 0,
