@@ -139,10 +139,10 @@ export default function TestsPage() {
             </div>
           ) : (
             <Tabs defaultValue="sectional" className="max-w-6xl mx-auto">
-              <TabsList className="grid w-full grid-cols-3 mb-8">
-                <TabsTrigger value="sectional">Sectional Tests</TabsTrigger>
-                <TabsTrigger value="full-length">Full-Length Tests</TabsTrigger>
-                <TabsTrigger value="previous-year">Previous Year Papers</TabsTrigger>
+              <TabsList className="flex flex-wrap w-full justify-center gap-2 mb-8 h-auto p-2">
+                <TabsTrigger value="sectional" className="flex-1 min-w-[140px] md:min-w-[160px]">Sectional Tests</TabsTrigger>
+                <TabsTrigger value="full-length" className="flex-1 min-w-[140px] md:min-w-[160px]">Full-Length Tests</TabsTrigger>
+                <TabsTrigger value="previous-year" className="flex-1 min-w-[140px] md:min-w-[180px]">Previous Year Papers</TabsTrigger>
               </TabsList>
 
               <TabsContent value="sectional" className="space-y-4">
