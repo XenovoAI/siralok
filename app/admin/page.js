@@ -237,6 +237,7 @@ export default function AdminPanel() {
         title: '',
         description: '',
         subject: 'Physics',
+        class: 'Class 11',
         pdfFile: null,
         thumbnailFile: null
       })
