@@ -253,12 +253,27 @@ export default function MaterialsPage() {
   }
 
   const handleView = (material) => {
-    // Check if user is logged in
+    // ============ AUTHENTICATION CHECK (Both Free & Paid) ============
     if (!user) {
       setPendingAction({ type: 'view', material })
       setShowAuthModal(true)
       return
     }
+
+    // ============ FREE MATERIALS ============
+    // Free materials: Only need authentication, NO payment check
+    if (material.is_free) {
+      setViewingPdf(material)
+      return
+    }
+
+    // ============ PAID MATERIALS ============
+    // Paid materials: Check if purchased before viewing
+    if (!canAccessMaterial(material)) {
+      toast.error('Please purchase this material to view')
+      return
+    }
+
     setViewingPdf(material)
   }
 
