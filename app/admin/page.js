@@ -210,6 +210,8 @@ export default function AdminPanel() {
         pdf_url: pdfUrl,
         thumbnail_url: thumbnailUrl,
         downloads: editingMaterial?.downloads || 0,
+        is_free: formData.is_free,
+        price: formData.is_free ? 0 : parseFloat(formData.price) || 0,
         updated_at: new Date().toISOString()
       }
 
