@@ -11,7 +11,7 @@ import sys
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://proxy-insert.preview.emergentagent.com/api"
+BASE_URL = "https://free-tier-split.preview.emergentagent.com/api"
 ADMIN_EMAIL = "admin@sircbse.com"
 ADMIN_PASSWORD = "admin123"
 
