@@ -8,7 +8,7 @@ import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { 
   Upload, Trash2, Edit, Plus, X, FileText, Image as ImageIcon, 
-  Users, Download, BookOpen, TrendingUp, Eye, BarChart3 
+  Users, Download, BookOpen, TrendingUp, Eye, BarChart3, Award 
 } from 'lucide-react'
 import { toast } from 'sonner'
 
