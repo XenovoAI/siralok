@@ -570,6 +570,24 @@ async function handleRoute(request, { params }) {
 
     // ============ RAZORPAY PAYMENT ROUTES ============
     
+    // Debug endpoint to check materials
+    if (route === '/payment/debug-materials' && method === 'GET') {
+      try {
+        const { data: materials, error } = await supabase
+          .from('materials')
+          .select('id, title, is_free, price')
+          .limit(10)
+        
+        return handleCORS(NextResponse.json({
+          materials: materials || [],
+          error: error?.message || null,
+          count: materials?.length || 0
+        }))
+      } catch (error) {
+        return handleCORS(NextResponse.json({ error: error.message }, { status: 500 }))
+      }
+    }
+
     // Create Razorpay order for material purchase
     if (route === '/payment/create-order' && method === 'POST') {
       try {
