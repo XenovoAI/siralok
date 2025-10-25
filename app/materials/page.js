@@ -57,7 +57,7 @@ export default function MaterialsPage() {
     }
   }
 
-  const filterMaterials = () => {
+  const filterMaterials = async () => {
     let filtered = materials
 
     // Filter by class
@@ -148,65 +148,6 @@ export default function MaterialsPage() {
             material_id: material.id,
             material_title: material.title,
             material_type: material.is_free ? 'free' : 'paid'
-          })
-
-        if (insertError) {
-          console.error('Error tracking download:', insertError)
-          // Don't block download if tracking fails
-          isNewDownload = false
-        }
-
-        // Update download counter only for new downloads
-        if (!insertError) {
-          const { error: updateError } = await supabase
-            .from('materials')
-            .update({ downloads: (material.downloads || 0) + 1 })
-            .eq('id', material.id)
-
-          if (updateError) {
-            console.error('Error updating download count:', updateError)
-          }
-        }
-      }
-
-      // Trigger download
-      window.open(material.pdf_url, '_blank')
-      
-      if (isNewDownload) {
-        toast.success('🎉 Download started!')
-      } else {
-        toast.success('Download started! (already counted)')
-      }
-      
-      // Refresh materials to update counter
-      loadMaterials()
-    } catch (error) {
-      console.error('Error downloading:', error)
-      toast.error('Failed to download')
-    }
-  }
-
-    try {
-      // Check if user has already downloaded this material
-      const { data: existingDownload } = await supabase
-        .from('material_downloads')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('material_id', material.id)
-        .single()
-
-      let isNewDownload = !existingDownload
-
-      // If not already downloaded, create download record
-      if (isNewDownload) {
-        const { error: insertError } = await supabase
-          .from('material_downloads')
-          .insert({
-            user_id: user.id,
-            user_email: user.email,
-            material_id: material.id,
-            material_title: material.title,
-            material_type: 'free'
           })
 
         if (insertError) {
