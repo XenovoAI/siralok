@@ -31,6 +31,19 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
       return
     }
 
+    // Validate material data
+    if (!material || !material.id) {
+      toast.error('Invalid material data')
+      console.error('Material missing:', material)
+      return
+    }
+
+    if (!material.price || material.price <= 0) {
+      toast.error('Invalid material price')
+      console.error('Material price missing or invalid:', material.price)
+      return
+    }
+
     setLoading(true)
 
     try {
