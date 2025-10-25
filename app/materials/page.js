@@ -113,24 +113,89 @@ export default function MaterialsPage() {
   }
 
   const handleDownload = async (material) => {
-    // Check if user is logged in
+    // ============ AUTHENTICATION CHECK (Both Free & Paid) ============
     if (!user) {
       setPendingAction({ type: 'download', material })
       setShowAuthModal(true)
       return
     }
 
-    // For PAID materials - check purchase status
-    if (!material.is_free && !canAccessMaterial(material)) {
+    // ============ FREE MATERIALS PATH ============
+    // Free materials: Only need authentication, NO payment logic
+    if (material.is_free) {
+      try {
+        let isNewDownload = true
+
+        // Check if user has already downloaded (for tracking only)
+        const { data: existingDownload } = await supabase
+          .from('material_downloads')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('material_id', material.id)
+          .single()
+
+        isNewDownload = !existingDownload
+
+        // If not already downloaded, create download record
+        if (isNewDownload) {
+          const { error: insertError } = await supabase
+            .from('material_downloads')
+            .insert({
+              user_id: user.id,
+              user_email: user.email,
+              material_id: material.id,
+              material_title: material.title,
+              material_type: 'free'
+            })
+
+          if (insertError) {
+            console.error('Error tracking download:', insertError)
+            isNewDownload = false
+          }
+
+          // Update download counter only for new downloads
+          if (!insertError) {
+            const { error: updateError } = await supabase
+              .from('materials')
+              .update({ downloads: (material.downloads || 0) + 1 })
+              .eq('id', material.id)
+
+            if (updateError) {
+              console.error('Error updating download count:', updateError)
+            }
+          }
+        }
+
+        // Trigger download
+        window.open(material.pdf_url, '_blank')
+        
+        if (isNewDownload) {
+          toast.success('🎉 Download started!')
+        } else {
+          toast.success('Download started! (already counted)')
+        }
+        
+        // Refresh materials to update counter
+        loadMaterials()
+      } catch (error) {
+        console.error('Error downloading free material:', error)
+        toast.error('Failed to download')
+      }
+      return
+    }
+
+    // ============ PAID MATERIALS PATH ============
+    // Paid materials: Check purchase status first
+    if (!canAccessMaterial(material)) {
       toast.error('Please purchase this material to download')
       return
     }
 
-    // For FREE materials OR purchased PAID materials - proceed with download
+    // User has purchased, proceed with download
     try {
       let isNewDownload = true
 
-      // Check if user has already downloaded this material (for tracking only)
+      // Check if user has already downloaded (for tracking only)
       const { data: existingDownload } = await supabase
         .from('material_downloads')
         .select('*')
@@ -149,12 +214,11 @@ export default function MaterialsPage() {
             user_email: user.email,
             material_id: material.id,
             material_title: material.title,
-            material_type: material.is_free ? 'free' : 'paid'
+            material_type: 'paid'
           })
 
         if (insertError) {
           console.error('Error tracking download:', insertError)
-          // Don't block download if tracking fails
           isNewDownload = false
         }
 
@@ -183,7 +247,7 @@ export default function MaterialsPage() {
       // Refresh materials to update counter
       loadMaterials()
     } catch (error) {
-      console.error('Error downloading:', error)
+      console.error('Error downloading paid material:', error)
       toast.error('Failed to download')
     }
   }
