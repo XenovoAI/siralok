@@ -118,11 +118,73 @@ export default function MaterialsPage() {
       return
     }
 
-    // Check if material requires payment and user hasn't purchased
-    if (!canAccessMaterial(material)) {
+    // For PAID materials - check purchase status
+    if (!material.is_free && !canAccessMaterial(material)) {
       toast.error('Please purchase this material to download')
       return
     }
+
+    // For FREE materials OR purchased PAID materials - proceed with download
+    try {
+      let isNewDownload = true
+
+      // Check if user has already downloaded this material (for tracking only)
+      const { data: existingDownload } = await supabase
+        .from('material_downloads')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('material_id', material.id)
+        .single()
+
+      isNewDownload = !existingDownload
+
+      // If not already downloaded, create download record
+      if (isNewDownload) {
+        const { error: insertError } = await supabase
+          .from('material_downloads')
+          .insert({
+            user_id: user.id,
+            user_email: user.email,
+            material_id: material.id,
+            material_title: material.title,
+            material_type: material.is_free ? 'free' : 'paid'
+          })
+
+        if (insertError) {
+          console.error('Error tracking download:', insertError)
+          // Don't block download if tracking fails
+          isNewDownload = false
+        }
+
+        // Update download counter only for new downloads
+        if (!insertError) {
+          const { error: updateError } = await supabase
+            .from('materials')
+            .update({ downloads: (material.downloads || 0) + 1 })
+            .eq('id', material.id)
+
+          if (updateError) {
+            console.error('Error updating download count:', updateError)
+          }
+        }
+      }
+
+      // Trigger download
+      window.open(material.pdf_url, '_blank')
+      
+      if (isNewDownload) {
+        toast.success('🎉 Download started!')
+      } else {
+        toast.success('Download started! (already counted)')
+      }
+      
+      // Refresh materials to update counter
+      loadMaterials()
+    } catch (error) {
+      console.error('Error downloading:', error)
+      toast.error('Failed to download')
+    }
+  }
 
     try {
       // Check if user has already downloaded this material
