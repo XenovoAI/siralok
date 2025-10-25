@@ -580,15 +580,30 @@ async function handleRoute(request, { params }) {
       const body = await request.json()
       const { materialId } = body
 
-      // Get material details
-      const material = await db.collection('materials').findOne({ id: materialId })
-      if (!material) {
+      if (!materialId) {
+        return handleCORS(NextResponse.json({ error: "Material ID is required" }, { status: 400 }))
+      }
+
+      // Get material details from Supabase (not MongoDB)
+      const { data: material, error: materialError } = await supabase
+        .from('materials')
+        .select('*')
+        .eq('id', materialId)
+        .single()
+
+      if (materialError || !material) {
+        console.error('Material fetch error:', materialError)
         return handleCORS(NextResponse.json({ error: "Material not found" }, { status: 404 }))
       }
 
       // Check if material is free
       if (material.is_free) {
         return handleCORS(NextResponse.json({ error: "This material is free" }, { status: 400 }))
+      }
+
+      // Validate price
+      if (!material.price || material.price <= 0) {
+        return handleCORS(NextResponse.json({ error: "Invalid material price" }, { status: 400 }))
       }
 
       // Check if user already purchased
