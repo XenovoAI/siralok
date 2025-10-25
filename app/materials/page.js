@@ -31,7 +31,10 @@ export default function MaterialsPage() {
 
   useEffect(() => {
     loadMaterials()
-  }, [])
+    if (user) {
+      loadPurchasedMaterials()
+    }
+  }, [user])
 
   useEffect(() => {
     filterMaterials()
