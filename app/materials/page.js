@@ -22,6 +22,7 @@ export default function MaterialsPage() {
   const [viewingPdf, setViewingPdf] = useState(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [pendingAction, setPendingAction] = useState(null)
+  const [purchasedMaterials, setPurchasedMaterials] = useState(new Set())
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
 
