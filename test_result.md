@@ -387,6 +387,18 @@ frontend:
       - working: true
         agent: "main"
         comment: "Created comprehensive Shipping & Delivery Policy page with 12 sections covering digital product delivery, access methods, delivery timeline, system requirements, access duration, technical support, content updates, multiple device access, offline access, physical materials (if applicable), data security, and contact information. Clarifies that all products are digital with instant delivery. Follows site design with sky blue accent, Navbar, and Footer components. Added link in footer Quick Links section."
+  
+  - task: "Razorpay Payment Gateway Integration"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js, /app/components/RazorpayButton.js, /app/app/materials/page.js, /app/app/admin/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented complete Razorpay payment gateway integration with free/paid material management. Features: 1) Admin Panel Updates - Added price field (₹) and free/paid toggle in material creation/edit form, visual price/FREE badges on material cards, beautiful pricing section with toggle UI and live preview. 2) Backend API - Created /api/payment/create-order (Razorpay order creation), /api/payment/verify (payment signature verification), /api/payment/my-purchases (user purchase history), /api/payment/check-purchase/:id (check specific purchase). Payment orders and purchases stored in MongoDB. 3) Frontend Integration - Created RazorpayButton component with Razorpay SDK integration, payment modal with sky blue theme, success/failure handling. Materials page updated to show FREE/PAID badges, payment button for unpurchased paid materials, download/view buttons for free or purchased materials, access control based on purchase status. 4) Environment - Added Razorpay live credentials (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, NEXT_PUBLIC_RAZORPAY_KEY_ID) to .env. 5) Security - Payment signature verification using HMAC SHA256, JWT token authentication for all payment APIs, purchase validation before material access. Admin can now mark materials as free or set custom prices. Users can purchase paid materials via Razorpay and access them after successful payment. Needs testing: payment flow, signature verification, purchase tracking, material access control."
 
 metadata:
   created_by: "main_agent"
