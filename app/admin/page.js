@@ -243,7 +243,9 @@ export default function AdminPanel() {
         subject: 'Physics',
         class: 'Class 11',
         pdfFile: null,
-        thumbnailFile: null
+        thumbnailFile: null,
+        is_free: true,
+        price: 0
       })
       setShowAddModal(false)
       setEditingMaterial(null)
