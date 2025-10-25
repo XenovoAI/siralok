@@ -443,6 +443,19 @@ export default function AdminPanel() {
                       {material.downloads || 0}
                     </span>
                   </div>
+
+                  {/* Price/Free badge */}
+                  <div className="absolute bottom-3 right-3">
+                    {material.is_free ? (
+                      <span className="px-3 py-1.5 bg-green-500/90 backdrop-blur-sm text-white rounded-lg text-xs font-bold shadow-md">
+                        FREE
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1.5 bg-gradient-to-r from-yellow-400 to-orange-500 backdrop-blur-sm text-white rounded-lg text-xs font-bold shadow-md">
+                        ₹{material.price || 0}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Content */}
