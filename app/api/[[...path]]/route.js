@@ -561,6 +561,205 @@ async function handleRoute(request, { params }) {
       }))
     }
 
+    // ============ RAZORPAY PAYMENT ROUTES ============
+    
+    // Create Razorpay order for material purchase
+    if (route === '/payment/create-order' && method === 'POST') {
+      const user = verifyToken(request)
+      if (!user) {
+        return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
+      }
+
+      const body = await request.json()
+      const { materialId } = body
+
+      // Get material details
+      const material = await db.collection('materials').findOne({ id: materialId })
+      if (!material) {
+        return handleCORS(NextResponse.json({ error: "Material not found" }, { status: 404 }))
+      }
+
+      // Check if material is free
+      if (material.is_free) {
+        return handleCORS(NextResponse.json({ error: "This material is free" }, { status: 400 }))
+      }
+
+      // Check if user already purchased
+      const existingPurchase = await db.collection('purchases').findOne({
+        userId: user.userId,
+        materialId: materialId
+      })
+
+      if (existingPurchase) {
+        return handleCORS(NextResponse.json({ 
+          error: "Material already purchased",
+          alreadyPurchased: true 
+        }, { status: 400 }))
+      }
+
+      // Create Razorpay order
+      const Razorpay = (await import('razorpay')).default
+      const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+      })
+
+      const options = {
+        amount: material.price * 100, // Convert to paise
+        currency: "INR",
+        receipt: `receipt_${materialId}_${Date.now()}`,
+        notes: {
+          materialId: materialId,
+          userId: user.userId,
+          materialTitle: material.title
+        }
+      }
+
+      try {
+        const order = await razorpay.orders.create(options)
+        
+        // Store order in database
+        await db.collection('payment_orders').insertOne({
+          id: uuidv4(),
+          orderId: order.id,
+          userId: user.userId,
+          materialId: materialId,
+          amount: material.price,
+          currency: 'INR',
+          status: 'created',
+          createdAt: new Date().toISOString()
+        })
+
+        return handleCORS(NextResponse.json({
+          orderId: order.id,
+          amount: order.amount,
+          currency: order.currency,
+          materialTitle: material.title
+        }))
+      } catch (error) {
+        console.error('Razorpay order creation error:', error)
+        return handleCORS(NextResponse.json(
+          { error: "Failed to create payment order", details: error.message },
+          { status: 500 }
+        ))
+      }
+    }
+
+    // Verify Razorpay payment
+    if (route === '/payment/verify' && method === 'POST') {
+      const user = verifyToken(request)
+      if (!user) {
+        return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
+      }
+
+      const body = await request.json()
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, materialId } = body
+
+      // Verify signature
+      const crypto = await import('crypto')
+      const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      hmac.update(razorpay_order_id + '|' + razorpay_payment_id)
+      const generated_signature = hmac.digest('hex')
+
+      if (generated_signature !== razorpay_signature) {
+        return handleCORS(NextResponse.json({ error: "Invalid payment signature" }, { status: 400 }))
+      }
+
+      // Get order details
+      const order = await db.collection('payment_orders').findOne({ orderId: razorpay_order_id })
+      if (!order) {
+        return handleCORS(NextResponse.json({ error: "Order not found" }, { status: 404 }))
+      }
+
+      // Create purchase record
+      const purchaseId = uuidv4()
+      await db.collection('purchases').insertOne({
+        id: purchaseId,
+        userId: user.userId,
+        materialId: materialId,
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+        amount: order.amount,
+        status: 'completed',
+        purchasedAt: new Date().toISOString()
+      })
+
+      // Update order status
+      await db.collection('payment_orders').updateOne(
+        { orderId: razorpay_order_id },
+        { 
+          $set: { 
+            status: 'completed',
+            paymentId: razorpay_payment_id,
+            completedAt: new Date().toISOString()
+          }
+        }
+      )
+
+      // Clear cache
+      cache.delete(`user-purchases-${user.userId}`)
+
+      return handleCORS(NextResponse.json({
+        success: true,
+        message: "Payment verified successfully",
+        purchaseId: purchaseId
+      }))
+    }
+
+    // Get user's purchased materials
+    if (route === '/payment/my-purchases' && method === 'GET') {
+      const user = verifyToken(request)
+      if (!user) {
+        return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
+      }
+
+      // Check cache
+      const cacheKey = `user-purchases-${user.userId}`
+      const cached = getCache(cacheKey)
+      if (cached) {
+        return handleCORS(NextResponse.json(cached))
+      }
+
+      const purchases = await db.collection('purchases')
+        .find({ userId: user.userId })
+        .sort({ purchasedAt: -1 })
+        .toArray()
+
+      // Get material details for each purchase
+      const purchasesWithDetails = await Promise.all(
+        purchases.map(async (purchase) => {
+          const material = await db.collection('materials').findOne({ id: purchase.materialId })
+          return {
+            ...purchase,
+            material: material || null
+          }
+        })
+      )
+
+      setCache(cacheKey, purchasesWithDetails)
+      return handleCORS(NextResponse.json(purchasesWithDetails))
+    }
+
+    // Check if user has purchased a specific material
+    if (route.startsWith('/payment/check-purchase/') && method === 'GET') {
+      const user = verifyToken(request)
+      if (!user) {
+        return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
+      }
+
+      const materialId = route.split('/').pop()
+      
+      const purchase = await db.collection('purchases').findOne({
+        userId: user.userId,
+        materialId: materialId
+      })
+
+      return handleCORS(NextResponse.json({
+        purchased: !!purchase,
+        purchase: purchase || null
+      }))
+    }
+
     // Route not found
     return handleCORS(NextResponse.json(
       { error: `Route ${route} not found` },
