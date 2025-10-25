@@ -81,6 +81,35 @@ export default function MaterialsPage() {
     setFilteredMaterials(filtered)
   }
 
+  const loadPurchasedMaterials = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      const response = await fetch('/api/payment/my-purchases', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        const purchases = await response.json()
+        const purchasedIds = new Set(purchases.map(p => p.materialId))
+        setPurchasedMaterials(purchasedIds)
+      }
+    } catch (error) {
+      console.error('Error loading purchases:', error)
+    }
+  }
+
+  const canAccessMaterial = (material) => {
+    // Free materials are always accessible
+    if (material.is_free) return true
+    
+    // Check if user has purchased
+    return purchasedMaterials.has(material.id)
+  }
+
   const handleDownload = async (material) => {
     // Check if user is logged in
     if (!user) {
