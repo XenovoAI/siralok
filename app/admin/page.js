@@ -549,6 +549,70 @@ export default function AdminPanel() {
                   </select>
                 </div>
 
+                {/* Pricing Section */}
+                <div className="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1">Material Access Type</h3>
+                      <p className="text-xs text-gray-600">Set whether this material is free or paid</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                    <div>
+                      <label className="text-sm font-medium text-gray-900">Free Material</label>
+                      <p className="text-xs text-gray-500">Toggle to make this material free or paid</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, is_free: !formData.is_free, price: !formData.is_free ? 0 : formData.price })}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        formData.is_free ? 'bg-green-500' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          formData.is_free ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {!formData.is_free && (
+                    <div className="animate-in slide-in-from-top">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹) *</label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
+                        <input
+                          type="number"
+                          value={formData.price}
+                          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                          className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 font-semibold text-gray-900"
+                          placeholder="0"
+                          min="0"
+                          step="1"
+                          required={!formData.is_free}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Set the price for this study material in INR</p>
+                    </div>
+                  )}
+
+                  {formData.is_free && (
+                    <div className="flex items-center gap-2 p-3 bg-green-100 rounded-lg">
+                      <Award className="w-5 h-5 text-green-600" />
+                      <p className="text-sm font-medium text-green-800">This material will be available for free to all users</p>
+                    </div>
+                  )}
+
+                  {!formData.is_free && formData.price > 0 && (
+                    <div className="flex items-center gap-2 p-3 bg-blue-100 rounded-lg">
+                      <TrendingUp className="w-5 h-5 text-blue-600" />
+                      <p className="text-sm font-medium text-blue-800">Users will pay ₹{formData.price} to access this material</p>
+                    </div>
+                  )}
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     PDF File {!editingMaterial && '*'}
