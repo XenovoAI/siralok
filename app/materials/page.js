@@ -507,61 +507,89 @@ export default function MaterialsPage() {
 
                       {/* Actions */}
                       <div className="space-y-2">
-                        {/* For paid materials */}
-                        {!material.is_free && !canAccessMaterial(material) && user && (
-                          <RazorpayButton 
-                            material={material} 
-                            onSuccess={() => {
-                              loadPurchasedMaterials()
-                              toast.success('Material unlocked! You can now download it.')
-                            }} 
-                          />
+                        {/* FREE MATERIALS - Simple Download/View */}
+                        {material.is_free && (
+                          <>
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={() => handleView(material)}
+                                variant="outline"
+                                className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
+                                size="sm"
+                              >
+                                {!user ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                <span className="hidden sm:inline">View</span>
+                              </Button>
+                              <Button
+                                onClick={() => handleDownload(material)}
+                                className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
+                                size="sm"
+                              >
+                                {!user ? <Lock className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+                                <span className="font-semibold">Download</span>
+                              </Button>
+                            </div>
+                            
+                            {/* Login prompt for non-logged users on free materials */}
+                            {!user && (
+                              <div className="text-center">
+                                <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                                  <Lock className="w-3 h-3" />
+                                  <span>Login to download for free</span>
+                                </p>
+                              </div>
+                            )}
+                          </>
                         )}
 
-                        {/* Download/View buttons - shown for free materials or purchased paid materials */}
-                        {(material.is_free || canAccessMaterial(material)) && (
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => handleView(material)}
-                              variant="outline"
-                              className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
-                              size="sm"
-                            >
-                              {!user ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                              <span className="hidden sm:inline">View</span>
-                            </Button>
-                            <Button
-                              onClick={() => handleDownload(material)}
-                              className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
-                              size="sm"
-                            >
-                              {!user ? <Lock className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                              <span className="font-semibold">Download</span>
-                            </Button>
-                          </div>
-                        )}
+                        {/* PAID MATERIALS - Payment Integration */}
+                        {!material.is_free && (
+                          <>
+                            {/* User not logged in - show login prompt */}
+                            {!user && (
+                              <Button
+                                onClick={() => setShowAuthModal(true)}
+                                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl"
+                              >
+                                <Lock className="w-4 h-4 mr-2" />
+                                Login to Purchase
+                              </Button>
+                            )}
 
-                        {/* Login prompt for non-logged users */}
-                        {!user && (
-                          <div className="text-center">
-                            <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
-                              <Lock className="w-3 h-3" />
-                              <span>Login required to access</span>
-                            </p>
-                          </div>
-                        )}
+                            {/* User logged in but hasn't purchased */}
+                            {user && !canAccessMaterial(material) && (
+                              <RazorpayButton 
+                                material={material} 
+                                onSuccess={() => {
+                                  loadPurchasedMaterials()
+                                  toast.success('Material unlocked! You can now download it.')
+                                }} 
+                              />
+                            )}
 
-                        {/* Locked message for paid materials */}
-                        {!material.is_free && !canAccessMaterial(material) && !user && (
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => setShowAuthModal(true)}
-                              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl"
-                            >
-                              <Lock className="w-4 h-4 mr-2" />
-                              Login to Purchase
-                            </Button>
-                          </div>
+                            {/* User has purchased - show download/view buttons */}
+                            {user && canAccessMaterial(material) && (
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={() => handleView(material)}
+                                  variant="outline"
+                                  className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
+                                  size="sm"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                  <span className="hidden sm:inline">View</span>
+                                </Button>
+                                <Button
+                                  onClick={() => handleDownload(material)}
+                                  className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
+                                  size="sm"
+                                >
+                                  <Download className="w-4 h-4" />
+                                  <span className="font-semibold">Download</span>
+                                </Button>
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
