@@ -572,29 +572,37 @@ async function handleRoute(request, { params }) {
     
     // Create Razorpay order for material purchase
     if (route === '/payment/create-order' && method === 'POST') {
-      const user = verifyToken(request)
-      if (!user) {
-        return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
-      }
+      try {
+        const user = verifyToken(request)
+        if (!user) {
+          console.error('[Payment] Unauthorized - no valid token')
+          return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
+        }
 
-      const body = await request.json()
-      const { materialId } = body
+        const body = await request.json()
+        const { materialId } = body
 
-      if (!materialId) {
-        return handleCORS(NextResponse.json({ error: "Material ID is required" }, { status: 400 }))
-      }
+        console.log('[Payment] Request received for materialId:', materialId)
 
-      // Get material details from Supabase (not MongoDB)
-      const { data: material, error: materialError } = await supabase
-        .from('materials')
-        .select('*')
-        .eq('id', materialId)
-        .single()
+        if (!materialId) {
+          console.error('[Payment] Material ID missing in request')
+          return handleCORS(NextResponse.json({ error: "Material ID is required" }, { status: 400 }))
+        }
 
-      if (materialError || !material) {
-        console.error('Material fetch error:', materialError)
-        return handleCORS(NextResponse.json({ error: "Material not found" }, { status: 404 }))
-      }
+        // Get material details from Supabase (not MongoDB)
+        console.log('[Payment] Fetching material from Supabase:', materialId)
+        const { data: material, error: materialError } = await supabase
+          .from('materials')
+          .select('*')
+          .eq('id', materialId)
+          .single()
+
+        console.log('[Payment] Material fetch result:', { material, error: materialError })
+
+        if (materialError || !material) {
+          console.error('[Payment] Material fetch error:', materialError)
+          return handleCORS(NextResponse.json({ error: "Material not found", details: materialError?.message }, { status: 404 }))
+        }
 
       // Check if material is free
       if (material.is_free) {
