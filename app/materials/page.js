@@ -529,7 +529,8 @@ export default function MaterialsPage() {
 
                       {/* Actions */}
                       <div className="space-y-2">
-                        {/* FREE MATERIALS - Simple Download/View */}
+                        {/* ============ FREE MATERIALS ============ */}
+                        {/* Simple Download/View - NO payment integration */}
                         {material.is_free && (
                           <>
                             <div className="flex gap-2">
@@ -552,7 +553,7 @@ export default function MaterialsPage() {
                               </Button>
                             </div>
                             
-                            {/* Login prompt for non-logged users on free materials */}
+                            {/* Login prompt for non-logged users */}
                             {!user && (
                               <div className="text-center">
                                 <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
@@ -564,7 +565,8 @@ export default function MaterialsPage() {
                           </>
                         )}
 
-                        {/* PAID MATERIALS - Payment Integration */}
+                        {/* ============ PAID MATERIALS ============ */}
+                        {/* Payment Integration with Razorpay */}
                         {!material.is_free && (
                           <>
                             {/* User not logged in - show login prompt */}
@@ -578,7 +580,7 @@ export default function MaterialsPage() {
                               </Button>
                             )}
 
-                            {/* User logged in but hasn't purchased */}
+                            {/* User logged in but hasn't purchased - show payment button */}
                             {user && !canAccessMaterial(material) && (
                               <RazorpayButton 
                                 material={material} 
