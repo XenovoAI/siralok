@@ -266,7 +266,9 @@ export default function AdminPanel() {
       subject: material.subject,
       class: material.class || 'Class 11',
       pdfFile: null,
-      thumbnailFile: null
+      thumbnailFile: null,
+      is_free: material.is_free !== undefined ? material.is_free : true,
+      price: material.price || 0
     })
     setShowAddModal(true)
   }
