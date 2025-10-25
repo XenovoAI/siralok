@@ -606,13 +606,17 @@ async function handleRoute(request, { params }) {
 
       // Check if material is free
       if (material.is_free) {
+        console.log('[Payment] Material is free, rejecting payment')
         return handleCORS(NextResponse.json({ error: "This material is free" }, { status: 400 }))
       }
 
       // Validate price
       if (!material.price || material.price <= 0) {
+        console.error('[Payment] Invalid material price:', material.price)
         return handleCORS(NextResponse.json({ error: "Invalid material price" }, { status: 400 }))
       }
+
+      console.log('[Payment] Material valid, checking for existing purchase')
 
       // Check if user already purchased
       const existingPurchase = await db.collection('purchases').findOne({
@@ -621,11 +625,14 @@ async function handleRoute(request, { params }) {
       })
 
       if (existingPurchase) {
+        console.log('[Payment] User already purchased this material')
         return handleCORS(NextResponse.json({ 
           error: "Material already purchased",
           alreadyPurchased: true 
         }, { status: 400 }))
       }
+
+      console.log('[Payment] Creating Razorpay order')
 
       // Create Razorpay order
       const Razorpay = (await import('razorpay')).default
@@ -645,9 +652,10 @@ async function handleRoute(request, { params }) {
         }
       }
 
-      try {
         const order = await razorpay.orders.create(options)
         
+        console.log('[Payment] Razorpay order created:', order.id)
+
         // Store order in database
         await db.collection('payment_orders').insertOne({
           id: uuidv4(),
@@ -660,6 +668,8 @@ async function handleRoute(request, { params }) {
           createdAt: new Date().toISOString()
         })
 
+        console.log('[Payment] Order stored in database')
+
         return handleCORS(NextResponse.json({
           orderId: order.id,
           amount: order.amount,
@@ -667,7 +677,7 @@ async function handleRoute(request, { params }) {
           materialTitle: material.title
         }))
       } catch (error) {
-        console.error('Razorpay order creation error:', error)
+        console.error('[Payment] Error in create-order:', error)
         return handleCORS(NextResponse.json(
           { error: "Failed to create payment order", details: error.message },
           { status: 500 }
