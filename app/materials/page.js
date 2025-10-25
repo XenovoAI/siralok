@@ -105,10 +105,10 @@ export default function MaterialsPage() {
   }
 
   const canAccessMaterial = (material) => {
-    // Free materials are always accessible
+    // FREE MATERIALS: Always accessible (only authentication required, checked separately)
     if (material.is_free) return true
     
-    // Check if user has purchased
+    // PAID MATERIALS: Check if user has purchased
     return purchasedMaterials.has(material.id)
   }
 
