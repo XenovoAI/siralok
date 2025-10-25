@@ -118,6 +118,12 @@ export default function MaterialsPage() {
       return
     }
 
+    // Check if material requires payment and user hasn't purchased
+    if (!canAccessMaterial(material)) {
+      toast.error('Please purchase this material to download')
+      return
+    }
+
     try {
       // Check if user has already downloaded this material
       const { data: existingDownload } = await supabase
