@@ -23,6 +23,8 @@ export default function Footer() {
               <li><Link href="/about" className="hover:text-sky-400">About Us</Link></li>
               <li><Link href="/privacy" className="hover:text-sky-400">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-sky-400">Terms of Service</Link></li>
+              <li><Link href="/cancellation-refund" className="hover:text-sky-400">Cancellation & Refund</Link></li>
+              <li><Link href="/shipping" className="hover:text-sky-400">Shipping</Link></li>
             </ul>
           </div>
 
