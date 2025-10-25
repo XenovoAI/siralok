@@ -31,6 +31,8 @@ export default function MaterialsPage() {
 
   useEffect(() => {
     loadMaterials()
+    // Only load purchases if user is authenticated
+    // This is ONLY for paid materials - free materials don't need this
     if (user) {
       loadPurchasedMaterials()
     }
