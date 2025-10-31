@@ -70,7 +70,7 @@ function handleCORS(response) {
   return response
 }
 
-// Verify JWT token
+// Verify JWT token (MongoDB)
 function verifyToken(request) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -80,6 +80,30 @@ function verifyToken(request) {
   const token = authHeader.substring(7)
   try {
     return jwt.verify(token, process.env.JWT_SECRET)
+  } catch (error) {
+    return null
+  }
+}
+
+// Verify Supabase token
+async function verifySupabaseToken(request) {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  
+  const token = authHeader.substring(7)
+  try {
+    const { data, error } = await supabase.auth.getUser(token)
+    if (error || !data.user) {
+      return null
+    }
+    // Return user object in format compatible with MongoDB JWT
+    return {
+      userId: data.user.id,
+      email: data.user.email,
+      role: data.user.user_metadata?.role || 'student'
+    }
   } catch (error) {
     return null
   }
