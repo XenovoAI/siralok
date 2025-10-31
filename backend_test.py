@@ -17,19 +17,15 @@ from datetime import datetime
 BASE_URL = "https://c21c831d-8f01-4db3-9e8e-9a7fbd07f91d.rpa.cloudlabs.emergentmethods.ai/api"
 RAZORPAY_KEY_SECRET = "gzjDcletmUDidZBiwp4s3OS1"  # From .env file
 
-class APITester:
+class PaymentFlowTester:
     def __init__(self):
         self.base_url = BASE_URL
-        self.admin_token = None
-        self.user_token = None
-        self.test_user_email = "testuser@example.com"
-        self.test_user_password = "testpass123"
-        self.test_user_name = "Test User"
-        self.results = {
-            "passed": 0,
-            "failed": 0,
-            "errors": []
-        }
+        self.session = requests.Session()
+        self.test_user_token = None
+        self.test_user_id = None
+        self.test_material_id = None
+        self.test_order_id = None
+        self.test_payment_id = None
         
     def log(self, message: str, level: str = "INFO"):
         """Log test messages"""
