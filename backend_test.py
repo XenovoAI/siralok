@@ -166,6 +166,10 @@ class PaymentFlowTester:
         """Test 4: Simulate payment verification"""
         self.log("🧪 TEST 4: Simulating payment verification")
         
+        if not self.test_order_id:
+            self.log("❌ No order ID available for verification")
+            return False
+        
         # Generate mock payment ID and signature
         self.test_payment_id = f"pay_{uuid.uuid4().hex[:10]}"
         mock_signature = self.generate_mock_payment_signature(
@@ -187,8 +191,7 @@ class PaymentFlowTester:
         response = self.make_request(
             'POST', 
             '/payment/verify', 
-            verify_data, 
-            auth_token=self.test_user_token
+            verify_data
         )
         
         if response:
@@ -198,11 +201,7 @@ class PaymentFlowTester:
             if response.status_code == 200:
                 data = response.json()
                 self.log(f"✅ Payment verification successful")
-                self.log(f"   Purchase ID: {data.get('purchaseId')}")
-                return True
-            elif response.status_code == 404:
-                self.log(f"⚠️  Order not found - expected since we used mock order")
-                self.log(f"   In real scenario, order would exist in MongoDB")
+                self.log(f"   Payment ID: {data.get('paymentId')}")
                 return True
             else:
                 error_msg = response.json().get('error', 'Unknown error')
