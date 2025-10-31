@@ -91,11 +91,6 @@ export default function AdminPanel() {
 
   const loadStats = async () => {
     try {
-      // Get total users count from auth.users
-      const { count: usersCount, error: usersError } = await supabase
-        .from('auth.users')
-        .select('*', { count: 'exact', head: true })
-
       // Get total downloads sum from materials
       const { data: materialsData, error: materialsError } = await supabase
         .from('materials')
@@ -113,20 +108,22 @@ export default function AdminPanel() {
       try {
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-        
+
         const { count: recentCount } = await supabase
           .from('material_downloads')
           .select('*', { count: 'exact', head: true })
           .gte('downloaded_at', sevenDaysAgo.toISOString())
-        
+
         recentDownloads = recentCount || 0
       } catch (err) {
         // Table might not exist yet, that's okay
         console.log('material_downloads table not found or empty')
       }
 
+      // For user count, we'll use a placeholder since we can't access auth.users with anon key
+      // In production, you'd want to create a separate table or use Supabase Edge Functions
       setStats({
-        totalUsers: usersCount || 0,
+        totalUsers: 0, // Placeholder - would need admin API or separate tracking
         totalDownloads,
         totalMaterials: materialsCount || 0,
         recentDownloads

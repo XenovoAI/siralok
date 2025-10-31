@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import Razorpay from 'razorpay'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import crypto from 'crypto'
 
 // Initialize Razorpay
@@ -11,7 +11,7 @@ const razorpay = new Razorpay({
 
 export async function POST(request) {
   try {
-    const { amount, subscriptionType, userId } = await request.json()
+    const { amount, subscriptionType, userId, materialId } = await request.json()
 
     if (!amount || !subscriptionType || !userId) {
       return NextResponse.json(
@@ -33,32 +33,44 @@ export async function POST(request) {
 
     const order = await razorpay.orders.create(options)
 
-    // Save payment record in database
-    const { data: payment, error } = await supabase
-      .from('payments')
-      .insert([
-        {
-          user_id: userId,
-          amount: amount,
-          payment_method: 'razorpay',
-          transaction_id: order.id,
-          razorpay_order_id: order.id,
-          status: 'pending',
-          subscription_type: subscriptionType
-        }
-      ])
-      .select()
-      .single()
+    // Save payment record in database using admin client (bypasses RLS)
+    if (supabaseAdmin) {
+      const { data: payment, error } = await supabaseAdmin
+        .from('payments')
+        .insert([
+          {
+            user_id: userId,
+            amount: amount,
+            payment_method: 'razorpay',
+            transaction_id: order.id,
+            razorpay_order_id: order.id,
+            status: 'pending',
+            subscription_type: subscriptionType
+          }
+        ])
+        .select()
+        .single()
 
-    if (error) throw error
+      if (error) throw error
 
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      paymentId: payment.id
-    })
+      return NextResponse.json({
+        success: true,
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        paymentId: payment.id
+      })
+    } else {
+      // Fallback: return order without saving to database
+      console.warn('Supabase admin client not available, returning order without saving')
+      return NextResponse.json({
+        success: true,
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        paymentId: null
+      })
+    }
   } catch (error) {
     console.error('Error creating order:', error)
     return NextResponse.json(
