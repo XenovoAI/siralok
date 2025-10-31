@@ -392,13 +392,19 @@ frontend:
     implemented: true
     working: "NA"
     file: "/app/app/api/[[...path]]/route.js, /app/components/RazorpayButton.js, /app/app/materials/page.js, /app/app/admin/page.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented complete Razorpay payment gateway integration with free/paid material management. Features: 1) Admin Panel Updates - Added price field (₹) and free/paid toggle in material creation/edit form, visual price/FREE badges on material cards, beautiful pricing section with toggle UI and live preview. 2) Backend API - Created /api/payment/create-order (Razorpay order creation), /api/payment/verify (payment signature verification), /api/payment/my-purchases (user purchase history), /api/payment/check-purchase/:id (check specific purchase). Payment orders and purchases stored in MongoDB. 3) Frontend Integration - Created RazorpayButton component with Razorpay SDK integration, payment modal with sky blue theme, success/failure handling. Materials page updated to show FREE/PAID badges, payment button for unpurchased paid materials, download/view buttons for free or purchased materials, access control based on purchase status. 4) Environment - Added Razorpay live credentials (RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, NEXT_PUBLIC_RAZORPAY_KEY_ID) to .env. 5) Security - Payment signature verification using HMAC SHA256, JWT token authentication for all payment APIs, purchase validation before material access. Admin can now mark materials as free or set custom prices. Users can purchase paid materials via Razorpay and access them after successful payment. Needs testing: payment flow, signature verification, purchase tracking, material access control."
+      - working: false
+        agent: "user"
+        comment: "ISSUE REPORTED: User clicks 'Buy for ₹1' → Payment successful ✅ → But NO DOWNLOAD OPTION appears ❌. Download buttons not showing after successful payment."
+      - working: "NA"
+        agent: "main"
+        comment: "FIXING DOWNLOAD BUTTON ISSUE: Root cause identified - after payment verification and page reload, the purchased materials state was not being properly loaded before UI render. Implemented fixes: 1) Added purchasesLoading state to track when purchases are being fetched, 2) Updated loading condition to wait for BOTH materials AND purchases to load before showing UI (line 328), 3) Added setPurchasesLoading(false) when user is not logged in, 4) Added console.log debugging in loadPurchasedMaterials() and canAccessMaterial() to track purchase state, 5) Removed 2-second delay in RazorpayButton.js - now reloads immediately after payment verification, 6) Added proper error handling in loadPurchasedMaterials(). The page now properly waits for purchases to load after payment before rendering the UI with download buttons. Files modified: /app/app/materials/page.js (added purchasesLoading state, updated loading logic, added console logs), /app/components/RazorpayButton.js (immediate reload, added console logs). Ready for testing."
 
 metadata:
   created_by: "main_agent"
