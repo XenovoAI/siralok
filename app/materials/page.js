@@ -109,10 +109,15 @@ export default function MaterialsPage() {
   }
 
   const loadPurchasedMaterials = async () => {
+    setPurchasesLoading(true)
     try {
       const token = localStorage.getItem('token')
-      if (!token) return
+      if (!token) {
+        setPurchasesLoading(false)
+        return
+      }
 
+      console.log('Loading purchased materials...')
       const response = await fetch('/api/payment/my-purchases', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -121,11 +126,15 @@ export default function MaterialsPage() {
 
       if (response.ok) {
         const purchases = await response.json()
+        console.log('Purchases loaded:', purchases)
         const purchasedIds = new Set(purchases.map(p => p.materialId))
+        console.log('Purchased material IDs:', Array.from(purchasedIds))
         setPurchasedMaterials(purchasedIds)
       }
     } catch (error) {
       console.error('Error loading purchases:', error)
+    } finally {
+      setPurchasesLoading(false)
     }
   }
 
