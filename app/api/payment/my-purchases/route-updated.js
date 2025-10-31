@@ -29,7 +29,7 @@ export async function GET(request) {
     if (supabaseAdmin) {
       const { data: purchases, error } = await supabaseAdmin
         .from('purchases')
-        .select('material_id')
+        .select('material_id as materialId')
         .eq('user_id', user.id)
         .eq('status', 'completed')
 
