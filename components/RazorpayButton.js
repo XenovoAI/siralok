@@ -109,12 +109,20 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
             toast.success('🎉 Payment successful! Processing download access...')
             console.log('Payment successful, verifying...', response)
 
+            // Get fresh access token
+            const accessToken = await getAccessToken()
+            if (!accessToken) {
+              toast.error('Authentication failed. Please login again.')
+              setLoading(false)
+              return
+            }
+
             // Verify payment
             const verifyResponse = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${accessToken}`
               },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
