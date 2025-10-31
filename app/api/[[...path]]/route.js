@@ -729,7 +729,7 @@ async function handleRoute(request, { params }) {
 
     // Verify Razorpay payment
     if (route === '/payment/verify' && method === 'POST') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }
