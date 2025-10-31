@@ -145,6 +145,13 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-RHQ962WEHV');
           `}
         </Script>
+        {/* Google AdSense */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6482344217580450"
+          strategy="afterInteractive"
+          async
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}
