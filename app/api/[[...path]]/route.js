@@ -70,7 +70,7 @@ function handleCORS(response) {
   return response
 }
 
-// Verify JWT token
+// Verify JWT token (MongoDB)
 function verifyToken(request) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -80,6 +80,30 @@ function verifyToken(request) {
   const token = authHeader.substring(7)
   try {
     return jwt.verify(token, process.env.JWT_SECRET)
+  } catch (error) {
+    return null
+  }
+}
+
+// Verify Supabase token
+async function verifySupabaseToken(request) {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  
+  const token = authHeader.substring(7)
+  try {
+    const { data, error } = await supabase.auth.getUser(token)
+    if (error || !data.user) {
+      return null
+    }
+    // Return user object in format compatible with MongoDB JWT
+    return {
+      userId: data.user.id,
+      email: data.user.email,
+      role: data.user.user_metadata?.role || 'student'
+    }
   } catch (error) {
     return null
   }
@@ -591,7 +615,7 @@ async function handleRoute(request, { params }) {
     // Create Razorpay order for material purchase
     if (route === '/payment/create-order' && method === 'POST') {
       try {
-        const user = verifyToken(request)
+        const user = await verifySupabaseToken(request)
         if (!user) {
           console.error('[Payment] Unauthorized - no valid token')
           return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
@@ -705,7 +729,7 @@ async function handleRoute(request, { params }) {
 
     // Verify Razorpay payment
     if (route === '/payment/verify' && method === 'POST') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }
@@ -766,7 +790,7 @@ async function handleRoute(request, { params }) {
 
     // Get user's purchased materials
     if (route === '/payment/my-purchases' && method === 'GET') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }
@@ -800,7 +824,7 @@ async function handleRoute(request, { params }) {
 
     // Check if user has purchased a specific material
     if (route.startsWith('/payment/check-purchase/') && method === 'GET') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }

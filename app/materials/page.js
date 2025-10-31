@@ -18,6 +18,7 @@ export default function MaterialsPage() {
   const [materials, setMaterials] = useState([])
   const [filteredMaterials, setFilteredMaterials] = useState([])
   const [loading, setLoading] = useState(true)
+  const [purchasesLoading, setPurchasesLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('All')
   const [selectedClass, setSelectedClass] = useState('All')
@@ -37,6 +38,9 @@ export default function MaterialsPage() {
     // This is ONLY for paid materials - free materials don't need this
     if (user) {
       loadPurchasedMaterials()
+    } else {
+      // If no user, set purchases loading to false
+      setPurchasesLoading(false)
     }
   }, [user])
 
@@ -105,23 +109,38 @@ export default function MaterialsPage() {
   }
 
   const loadPurchasedMaterials = async () => {
+    setPurchasesLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      if (!token) return
+      // Get Supabase access token
+      const { data: { session } } = await supabase.auth.getSession()
+      const accessToken = session?.access_token
+      
+      if (!accessToken) {
+        console.log('No access token available')
+        setPurchasesLoading(false)
+        return
+      }
 
+      console.log('Loading purchased materials...')
       const response = await fetch('/api/payment/my-purchases', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
       if (response.ok) {
         const purchases = await response.json()
+        console.log('Purchases loaded:', purchases)
         const purchasedIds = new Set(purchases.map(p => p.materialId))
+        console.log('Purchased material IDs:', Array.from(purchasedIds))
         setPurchasedMaterials(purchasedIds)
+      } else {
+        console.error('Failed to load purchases:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Error loading purchases:', error)
+    } finally {
+      setPurchasesLoading(false)
     }
   }
 
@@ -130,7 +149,9 @@ export default function MaterialsPage() {
     if (material.is_free) return true
 
     // PAID MATERIALS: Check if user has purchased
-    return purchasedMaterials.has(material.id)
+    const hasPurchased = purchasedMaterials.has(material.id)
+    console.log(`Checking access for material ${material.id} (${material.title}):`, hasPurchased, 'Purchased IDs:', Array.from(purchasedMaterials))
+    return hasPurchased
   }
 
   const handleDownload = async (material) => {
@@ -325,7 +346,7 @@ export default function MaterialsPage() {
     return colors[subject] || 'bg-gray-100 text-gray-600'
   }
 
-  if (loading) {
+  if (loading || (user && purchasesLoading)) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />

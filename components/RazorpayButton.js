@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2, Lock, CreditCard } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/AuthContext'
+import { supabase } from '@/lib/supabase'
 
 export default function RazorpayButton({ material, onSuccess, disabled = false }) {
   const [loading, setLoading] = useState(false)
@@ -23,6 +24,11 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
       script.onerror = () => resolve(false)
       document.body.appendChild(script)
     })
+  }
+
+  const getAccessToken = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token || null
   }
 
   const handlePayment = async () => {
@@ -47,6 +53,14 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
     setLoading(true)
 
     try {
+      // Get Supabase access token
+      const accessToken = await getAccessToken()
+      if (!accessToken) {
+        toast.error('Authentication failed. Please login again.')
+        setLoading(false)
+        return
+      }
+
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript()
       if (!scriptLoaded) {
@@ -60,7 +74,7 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           amount: material.price,
@@ -93,13 +107,22 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
           try {
             // Show success message first
             toast.success('🎉 Payment successful! Processing download access...')
+            console.log('Payment successful, verifying...', response)
+
+            // Get fresh access token
+            const accessToken = await getAccessToken()
+            if (!accessToken) {
+              toast.error('Authentication failed. Please login again.')
+              setLoading(false)
+              return
+            }
 
             // Verify payment
             const verifyResponse = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${accessToken}`
               },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
@@ -110,18 +133,17 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
             })
 
             const verifyData = await verifyResponse.json()
+            console.log('Payment verification response:', verifyData)
 
             if (!verifyResponse.ok) {
               throw new Error(verifyData.error || 'Payment verification failed')
             }
 
-            toast.success('✅ Download access granted! Refreshing page...')
-            if (onSuccess) onSuccess()
-
-            // Reload page after 2 seconds to show download button
-            setTimeout(() => {
-              window.location.reload()
-            }, 2000)
+            toast.success('✅ Download access granted!')
+            console.log('Reloading page to show download button...')
+            
+            // Reload page immediately to update UI with purchase access
+            window.location.reload()
           } catch (error) {
             console.error('Payment verification error:', error)
             toast.error(error.message || 'Payment verification failed')
