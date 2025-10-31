@@ -38,6 +38,9 @@ export default function MaterialsPage() {
     // This is ONLY for paid materials - free materials don't need this
     if (user) {
       loadPurchasedMaterials()
+    } else {
+      // If no user, set purchases loading to false
+      setPurchasesLoading(false)
     }
   }, [user])
 
