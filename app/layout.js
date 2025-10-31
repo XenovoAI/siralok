@@ -146,6 +146,7 @@ export default function RootLayout({ children }) {
           `}
         </Script>
         {/* Google AdSense */}
+        <meta name="google-adsense-account" content="ca-pub-6482344217580450" />
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6482344217580450"
           strategy="afterInteractive"
