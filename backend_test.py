@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-SIR CBSE Backend API Test Suite
-Tests all backend endpoints comprehensively
+Backend Test Suite for SIR CBSE Razorpay Payment Integration
+Tests the complete payment flow including order creation, verification, and purchase access
 """
 
 import requests
 import json
+import hmac
+import hashlib
 import time
+import uuid
 import sys
-from typing import Dict, Any, Optional
+from datetime import datetime
 
 # Configuration
-BASE_URL = "https://onerupee-download.preview.emergentagent.com/api"
-ADMIN_EMAIL = "admin@sircbse.com"
-ADMIN_PASSWORD = "admin123"
+BASE_URL = "https://c21c831d-8f01-4db3-9e8e-9a7fbd07f91d.rpa.cloudlabs.emergentmethods.ai/api"
+RAZORPAY_KEY_SECRET = "gzjDcletmUDidZBiwp4s3OS1"  # From .env file
 
 class APITester:
     def __init__(self):
