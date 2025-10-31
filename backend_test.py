@@ -124,8 +124,14 @@ class PaymentFlowTester:
         """Test 3: Create Razorpay payment order"""
         self.log("🧪 TEST 3: Creating Razorpay payment order")
         
+        # Use the real paid material ID from debug endpoint
+        real_material_id = "d9743bb2-9e78-475e-8d84-b9fb86eab8db"
+        
         order_data = {
-            "materialId": self.test_material_id
+            "amount": 1,
+            "subscriptionType": "material_purchase",
+            "userId": self.test_user_id,
+            "materialId": real_material_id
         }
         
         response = self.make_request(
@@ -142,17 +148,11 @@ class PaymentFlowTester:
             if response.status_code == 200:
                 data = response.json()
                 self.test_order_id = data.get('orderId')
+                self.test_material_id = real_material_id  # Update to real material ID
                 self.log(f"✅ Payment order created successfully")
                 self.log(f"   Order ID: {self.test_order_id}")
                 self.log(f"   Amount: ₹{data.get('amount', 0) / 100}")
                 self.log(f"   Currency: {data.get('currency')}")
-                return True
-            elif response.status_code == 404:
-                self.log(f"⚠️  Material not found in Supabase - this is expected for test material")
-                self.log(f"   Creating a real test scenario would require Supabase access")
-                # For testing purposes, let's create a mock order ID
-                self.test_order_id = f"order_{uuid.uuid4().hex[:10]}"
-                self.log(f"   Using mock order ID for testing: {self.test_order_id}")
                 return True
             else:
                 error_msg = response.json().get('error', 'Unknown error')
