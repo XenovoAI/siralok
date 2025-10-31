@@ -117,12 +117,7 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
 
             toast.success('✅ Download access granted!')
             
-            // Call onSuccess to reload purchases
-            if (onSuccess) {
-              await onSuccess()
-            }
-            
-            // Reload page immediately to update UI
+            // Reload page immediately to update UI with purchase access
             window.location.reload()
           } catch (error) {
             console.error('Payment verification error:', error)
