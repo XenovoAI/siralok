@@ -790,7 +790,7 @@ async function handleRoute(request, { params }) {
 
     // Get user's purchased materials
     if (route === '/payment/my-purchases' && method === 'GET') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }
