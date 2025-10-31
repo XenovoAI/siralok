@@ -143,7 +143,9 @@ export default function MaterialsPage() {
     if (material.is_free) return true
 
     // PAID MATERIALS: Check if user has purchased
-    return purchasedMaterials.has(material.id)
+    const hasPurchased = purchasedMaterials.has(material.id)
+    console.log(`Checking access for material ${material.id} (${material.title}):`, hasPurchased, 'Purchased IDs:', Array.from(purchasedMaterials))
+    return hasPurchased
   }
 
   const handleDownload = async (material) => {
