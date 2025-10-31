@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import AuthModal from '@/components/AuthModal'
 import RazorpayButton from '@/components/RazorpayButton'
 import { Button } from '@/components/ui/button'
-import { Search, Download, Eye, BookOpen, Filter, Lock, TrendingUp, Award } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Search, Download, Eye, BookOpen, Filter, Lock, TrendingUp, Award, X, Share2, Star } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function MaterialsPage() {
@@ -308,10 +310,22 @@ export default function MaterialsPage() {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading materials...</p>
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-gray-100">
+                <Skeleton className="h-52 w-full" />
+                <div className="p-5 space-y-3">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-10 flex-1" />
+                    <Skeleton className="h-10 flex-1" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <Footer />
@@ -374,8 +388,8 @@ export default function MaterialsPage() {
               </div>
             </div>
 
-            {/* Search Bar - Enhanced */}
-            <div className="max-w-2xl mx-auto">
+            {/* Search Bar - Mobile Optimized */}
+            <div className="w-full max-w-2xl mx-auto px-4">
               <div className="relative">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -383,8 +397,16 @@ export default function MaterialsPage() {
                   placeholder="Search for materials, subjects, topics..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-white rounded-2xl shadow-xl focus:outline-none focus:ring-4 focus:ring-white/30 text-gray-900 placeholder-gray-400 text-lg"
+                  className="w-full h-12 pl-14 pr-12 py-3 bg-white rounded-2xl shadow-xl focus:outline-none focus:ring-4 focus:ring-white/30 text-gray-900 placeholder-gray-400 text-base"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -398,46 +420,50 @@ export default function MaterialsPage() {
         </div>
       </section>
 
-      {/* Filter Section - Enhanced */}
-      <section className="py-8">
+      {/* Filter Section - Mobile Optimized */}
+      <section className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 py-6 shadow-sm">
         <div className="container mx-auto px-4">
-          {/* Class Filter */}
+          {/* Class Filter - Horizontal Scroll */}
           <div className="mb-6">
             <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Class</h3>
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              {classes.map((classItem) => (
-                <button
-                  key={classItem}
-                  onClick={() => setSelectedClass(classItem)}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
-                    selectedClass === classItem
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white scale-105 shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                  }`}
-                >
-                  {classItem}
-                </button>
-              ))}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-3 pb-2 min-w-max px-4">
+                {classes.map((classItem) => (
+                  <button
+                    key={classItem}
+                    onClick={() => setSelectedClass(classItem)}
+                    className={`px-6 py-3 min-h-[50px] rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
+                      selectedClass === classItem
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white scale-105 shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                  >
+                    {classItem}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Subject Filter */}
+          {/* Subject Filter - Horizontal Scroll */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Subject</h3>
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              {subjects.map((subject) => (
-                <button
-                  key={subject}
-                  onClick={() => setSelectedSubject(subject)}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
-                    selectedSubject === subject
-                      ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white scale-105 shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                  }`}
-                >
-                  {subject}
-                </button>
-              ))}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-3 pb-2 min-w-max px-4">
+                {subjects.map((subject) => (
+                  <button
+                    key={subject}
+                    onClick={() => setSelectedSubject(subject)}
+                    className={`px-6 py-3 min-h-[50px] rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
+                      selectedSubject === subject
+                        ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white scale-105 shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                  >
+                    {subject}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -465,7 +491,7 @@ export default function MaterialsPage() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 {filteredMaterials.map((material) => (
                   <div
                     key={material.id}
@@ -473,10 +499,13 @@ export default function MaterialsPage() {
                   >
                     {/* Thumbnail */}
                     <div className="relative h-52 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                      <img
+                      <Image
                         src={material.thumbnail_url}
                         alt={material.title}
+                        width={400}
+                        height={200}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        priority={false}
                       />
                       {/* Overlay gradient */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -552,7 +581,30 @@ export default function MaterialsPage() {
                                 <span className="font-semibold">Download</span>
                               </Button>
                             </div>
-                            
+
+                            {/* Share Button */}
+                            <Button
+                              onClick={() => {
+                                if (navigator.share) {
+                                  navigator.share({
+                                    title: material.title,
+                                    text: `Check out this study material: ${material.title}`,
+                                    url: window.location.href
+                                  })
+                                } else {
+                                  // Fallback: copy to clipboard
+                                  navigator.clipboard.writeText(`${material.title} - ${window.location.href}`)
+                                  toast.success('Link copied to clipboard!')
+                                }
+                              }}
+                              variant="outline"
+                              className="w-full flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
+                              size="sm"
+                            >
+                              <Share2 className="w-4 h-4" />
+                              <span>Share</span>
+                            </Button>
+
                             {/* Login prompt for non-logged users */}
                             {!user && (
                               <div className="text-center">
@@ -582,36 +634,61 @@ export default function MaterialsPage() {
 
                             {/* User logged in but hasn't purchased - show payment button */}
                             {user && !canAccessMaterial(material) && (
-                              <RazorpayButton 
-                                material={material} 
+                              <RazorpayButton
+                                material={material}
                                 onSuccess={() => {
                                   loadPurchasedMaterials()
                                   toast.success('Material unlocked! You can now download it.')
-                                }} 
+                                }}
                               />
                             )}
 
                             {/* User has purchased - show download/view buttons */}
                             {user && canAccessMaterial(material) && (
-                              <div className="flex gap-2">
+                              <>
+                                <div className="flex gap-2">
+                                  <Button
+                                    onClick={() => handleView(material)}
+                                    variant="outline"
+                                    className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
+                                    size="sm"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                    <span className="hidden sm:inline">View</span>
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleDownload(material)}
+                                    className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
+                                    size="sm"
+                                  >
+                                    <Download className="w-4 h-4" />
+                                    <span className="font-semibold">Download</span>
+                                  </Button>
+                                </div>
+
+                                {/* Share Button */}
                                 <Button
-                                  onClick={() => handleView(material)}
+                                  onClick={() => {
+                                    if (navigator.share) {
+                                      navigator.share({
+                                        title: material.title,
+                                        text: `Check out this premium study material: ${material.title}`,
+                                        url: window.location.href
+                                      })
+                                    } else {
+                                      // Fallback: copy to clipboard
+                                      navigator.clipboard.writeText(`${material.title} - ${window.location.href}`)
+                                      toast.success('Link copied to clipboard!')
+                                    }
+                                  }}
                                   variant="outline"
-                                  className="flex-1 flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
+                                  className="w-full flex items-center justify-center gap-2 hover:bg-gray-50 border-gray-200 rounded-xl"
                                   size="sm"
                                 >
-                                  <Eye className="w-4 h-4" />
-                                  <span className="hidden sm:inline">View</span>
+                                  <Share2 className="w-4 h-4" />
+                                  <span>Share</span>
                                 </Button>
-                                <Button
-                                  onClick={() => handleDownload(material)}
-                                  className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-md hover:shadow-xl flex items-center justify-center gap-2 rounded-xl transition-all duration-200"
-                                  size="sm"
-                                >
-                                  <Download className="w-4 h-4" />
-                                  <span className="font-semibold">Download</span>
-                                </Button>
-                              </div>
+                              </>
                             )}
                           </>
                         )}
@@ -637,14 +714,6 @@ export default function MaterialsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => handleDownload(viewingPdf)}
-                  className="bg-sky-600 hover:bg-sky-700 flex items-center gap-2"
-                  size="sm"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </Button>
-                <Button
                   onClick={closePdfViewer}
                   variant="outline"
                   size="sm"
@@ -661,6 +730,24 @@ export default function MaterialsPage() {
                 className="w-full h-full"
                 title={viewingPdf.title}
               />
+            </div>
+
+            {/* Sticky Download Bar - Mobile Optimized */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-gray-900 truncate">{viewingPdf.title}</h4>
+                  <p className="text-sm text-gray-600 truncate">{viewingPdf.subject}</p>
+                </div>
+                <Button
+                  onClick={() => handleDownload(viewingPdf)}
+                  className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 flex-shrink-0"
+                  size="sm"
+                >
+                  <Download className="w-5 h-5" />
+                  Download
+                </Button>
+              </div>
             </div>
           </div>
         </div>
