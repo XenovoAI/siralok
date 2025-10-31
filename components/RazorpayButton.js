@@ -93,6 +93,7 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
           try {
             // Show success message first
             toast.success('🎉 Payment successful! Processing download access...')
+            console.log('Payment successful, verifying...', response)
 
             // Verify payment
             const verifyResponse = await fetch('/api/payment/verify', {
@@ -110,12 +111,14 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
             })
 
             const verifyData = await verifyResponse.json()
+            console.log('Payment verification response:', verifyData)
 
             if (!verifyResponse.ok) {
               throw new Error(verifyData.error || 'Payment verification failed')
             }
 
             toast.success('✅ Download access granted!')
+            console.log('Reloading page to show download button...')
             
             // Reload page immediately to update UI with purchase access
             window.location.reload()
