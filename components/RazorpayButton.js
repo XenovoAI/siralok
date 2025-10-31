@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2, Lock, CreditCard } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/AuthContext'
+import { supabase } from '@/lib/supabase'
 
 export default function RazorpayButton({ material, onSuccess, disabled = false }) {
   const [loading, setLoading] = useState(false)
@@ -23,6 +24,11 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
       script.onerror = () => resolve(false)
       document.body.appendChild(script)
     })
+  }
+
+  const getAccessToken = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token || null
   }
 
   const handlePayment = async () => {
@@ -47,6 +53,14 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
     setLoading(true)
 
     try {
+      // Get Supabase access token
+      const accessToken = await getAccessToken()
+      if (!accessToken) {
+        toast.error('Authentication failed. Please login again.')
+        setLoading(false)
+        return
+      }
+
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript()
       if (!scriptLoaded) {
@@ -60,7 +74,7 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           amount: material.price,
