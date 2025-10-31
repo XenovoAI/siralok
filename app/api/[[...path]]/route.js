@@ -615,7 +615,7 @@ async function handleRoute(request, { params }) {
     // Create Razorpay order for material purchase
     if (route === '/payment/create-order' && method === 'POST') {
       try {
-        const user = verifyToken(request)
+        const user = await verifySupabaseToken(request)
         if (!user) {
           console.error('[Payment] Unauthorized - no valid token')
           return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
