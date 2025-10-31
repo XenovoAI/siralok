@@ -14,7 +14,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://c21c831d-8f01-4db3-9e8e-9a7fbd07f91d.rpa.cloudlabs.emergentmethods.ai/api"
+BASE_URL = "http://localhost:3000/api"
 RAZORPAY_KEY_SECRET = "gzjDcletmUDidZBiwp4s3OS1"  # From .env file
 
 class PaymentFlowTester:
