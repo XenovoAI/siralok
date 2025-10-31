@@ -340,7 +340,7 @@ export default function MaterialsPage() {
     return colors[subject] || 'bg-gray-100 text-gray-600'
   }
 
-  if (loading) {
+  if (loading || (user && purchasesLoading)) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
