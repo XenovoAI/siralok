@@ -18,6 +18,7 @@ export default function MaterialsPage() {
   const [materials, setMaterials] = useState([])
   const [filteredMaterials, setFilteredMaterials] = useState([])
   const [loading, setLoading] = useState(true)
+  const [purchasesLoading, setPurchasesLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('All')
   const [selectedClass, setSelectedClass] = useState('All')
