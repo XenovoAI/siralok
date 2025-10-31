@@ -390,7 +390,7 @@ frontend:
   
   - task: "Razorpay Payment Gateway Integration"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/app/api/[[...path]]/route.js, /app/components/RazorpayButton.js, /app/app/materials/page.js, /app/app/admin/page.js"
     stuck_count: 1
     priority: "high"
