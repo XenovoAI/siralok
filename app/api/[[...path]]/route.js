@@ -824,7 +824,7 @@ async function handleRoute(request, { params }) {
 
     // Check if user has purchased a specific material
     if (route.startsWith('/payment/check-purchase/') && method === 'GET') {
-      const user = verifyToken(request)
+      const user = await verifySupabaseToken(request)
       if (!user) {
         return handleCORS(NextResponse.json({ error: "Unauthorized" }, { status: 401 }))
       }
