@@ -422,7 +422,8 @@ test_plan:
     - "Timer-based Test Interface"
     - "Test Submission and Results"
     - "Navigation Bar"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "Razorpay Payment Gateway Integration"
   test_all: false
   test_priority: "high_first"
 
