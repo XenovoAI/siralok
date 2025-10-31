@@ -111,8 +111,12 @@ export default function MaterialsPage() {
   const loadPurchasedMaterials = async () => {
     setPurchasesLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
+      // Get Supabase access token
+      const { data: { session } } = await supabase.auth.getSession()
+      const accessToken = session?.access_token
+      
+      if (!accessToken) {
+        console.log('No access token available')
         setPurchasesLoading(false)
         return
       }
@@ -120,7 +124,7 @@ export default function MaterialsPage() {
       console.log('Loading purchased materials...')
       const response = await fetch('/api/payment/my-purchases', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
@@ -130,6 +134,8 @@ export default function MaterialsPage() {
         const purchasedIds = new Set(purchases.map(p => p.materialId))
         console.log('Purchased material IDs:', Array.from(purchasedIds))
         setPurchasedMaterials(purchasedIds)
+      } else {
+        console.error('Failed to load purchases:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Error loading purchases:', error)
