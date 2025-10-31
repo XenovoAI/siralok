@@ -115,13 +115,15 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
               throw new Error(verifyData.error || 'Payment verification failed')
             }
 
-            toast.success('✅ Download access granted! Refreshing page...')
-            if (onSuccess) onSuccess()
-
-            // Reload page after 2 seconds to show download button
-            setTimeout(() => {
-              window.location.reload()
-            }, 2000)
+            toast.success('✅ Download access granted!')
+            
+            // Call onSuccess to reload purchases
+            if (onSuccess) {
+              await onSuccess()
+            }
+            
+            // Reload page immediately to update UI
+            window.location.reload()
           } catch (error) {
             console.error('Payment verification error:', error)
             toast.error(error.message || 'Payment verification failed')
