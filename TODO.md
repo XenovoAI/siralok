@@ -1,14 +1,12 @@
-# Fix Console Errors in Study Materials App
-
-## Issues to Fix
-- [x] 404 on auth.users query in admin panel
-- [x] 400 on payment/create-order API
-- [x] Missing required fields error in payment
-- [x] Invalid base64 URL errors
+# TODO: Fetch Real Users in Admin Dashboard
 
 ## Tasks
-- [x] Fix admin stats to avoid auth.users query
-- [x] Update RazorpayButton to send correct payment data
-- [x] Ensure payment API compatibility
-- [x] Add file URL validation and error handling
-- [x] Test payment flow after fixes
+- [x] Import supabaseAdmin in app/admin/page.js
+- [x] Update loadStats function to fetch real user count using supabaseAdmin.auth.admin.listUsers()
+- [x] Test the admin dashboard to verify user count displays correctly
+
+## Status
+- [x] Plan approved by user
+- [x] Implementation in progress
+- [x] Implementation completed
+- [x] Testing completed successfully

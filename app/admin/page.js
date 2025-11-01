@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
@@ -120,10 +121,19 @@ export default function AdminPanel() {
         console.log('material_downloads table not found or empty')
       }
 
-      // For user count, we'll use a placeholder since we can't access auth.users with anon key
-      // In production, you'd want to create a separate table or use Supabase Edge Functions
+      // Get real user count using admin client
+      let totalUsers = 0
+      try {
+        const { data: users, error: usersError } = await supabaseAdmin.auth.admin.listUsers()
+        if (!usersError && users) {
+          totalUsers = users.users.length
+        }
+      } catch (err) {
+        console.log('Could not fetch user count, using 0 as fallback')
+      }
+
       setStats({
-        totalUsers: 0, // Placeholder - would need admin API or separate tracking
+        totalUsers,
         totalDownloads,
         totalMaterials: materialsCount || 0,
         recentDownloads

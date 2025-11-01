@@ -7,22 +7,31 @@ import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
-import { Book, FileText, Clock, Award, TrendingUp, Target } from 'lucide-react'
+import { Book, FileText, Clock, Award, TrendingUp, Target, Download, Receipt, Calendar, IndianRupee } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [purchases, setPurchases] = useState([])
+  const [purchasesLoading, setPurchasesLoading] = useState(false)
 
   useEffect(() => {
     checkUser()
   }, [])
 
+  useEffect(() => {
+    if (user) {
+      fetchPurchases()
+      setupRealtimeSubscription()
+    }
+  }, [user])
+
   const checkUser = async () => {
     try {
       const { data: { session }, error } = await supabase.auth.getSession()
-      
+
       if (error) throw error
 
       if (!session) {
@@ -38,6 +47,92 @@ export default function DashboardPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchPurchases = async () => {
+    try {
+      setPurchasesLoading(true)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/payment/my-purchases', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setPurchases(data)
+      } else {
+        console.error('Failed to fetch purchases')
+      }
+    } catch (error) {
+      console.error('Error fetching purchases:', error)
+    } finally {
+      setPurchasesLoading(false)
+    }
+  }
+
+  const setupRealtimeSubscription = () => {
+    const channel = supabase
+      .channel('purchases_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'purchases',
+        filter: `user_id=eq.${user?.id}`,
+      }, () => {
+        fetchPurchases()
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'material_downloads',
+        filter: `user_id=eq.${user?.id}`,
+      }, () => {
+        fetchPurchases()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }
+
+  const handleDownload = async (material) => {
+    try {
+      // Record download
+      const { data: { session } } = await supabase.auth.getSession()
+      await fetch('/api/materials/download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          materialId: material.id,
+          materialTitle: material.title,
+        }),
+      })
+
+      // Open PDF in new tab
+      window.open(material.pdf_url, '_blank')
+      toast.success('Download started!')
+    } catch (error) {
+      console.error('Download error:', error)
+      toast.error('Failed to download material')
+    }
+  }
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 
   if (loading) {
@@ -69,64 +164,179 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Quick Stats */}
-      <section className="py-6 sm:py-8 bg-white">
+      {/* My Purchases Section */}
+      <section className="py-8 sm:py-12 bg-gradient-to-b from-green-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            <div className="bg-sky-50 rounded-lg p-4 sm:p-6 text-center">
-              <Book className="w-6 h-6 sm:w-8 sm:h-8 text-sky-600 mx-auto mb-2" />
-              <div className="text-xl sm:text-2xl font-bold text-gray-900">4</div>
-              <div className="text-xs sm:text-sm text-gray-600">Subjects</div>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">My Purchases</h2>
+              <p className="text-gray-600">Your purchased study materials and download history</p>
             </div>
-            <div className="bg-green-50 rounded-lg p-4 sm:p-6 text-center">
-              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mx-auto mb-2" />
-              <div className="text-xl sm:text-2xl font-bold text-gray-900">0</div>
-              <div className="text-xs sm:text-sm text-gray-600">Tests Taken</div>
-            </div>
-            <div className="bg-yellow-50 rounded-lg p-4 sm:p-6 text-center">
-              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 mx-auto mb-2" />
-              <div className="text-xl sm:text-2xl font-bold text-gray-900">0h</div>
-              <div className="text-xs sm:text-sm text-gray-600">Study Time</div>
-            </div>
-            <div className="bg-purple-50 rounded-lg p-4 sm:p-6 text-center">
-              <Award className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-xl sm:text-2xl font-bold text-gray-900">0%</div>
-              <div className="text-xs sm:text-sm text-gray-600">Avg Score</div>
-            </div>
+
+            {purchasesLoading ? (
+              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading purchases...</p>
+              </div>
+            ) : purchases.length === 0 ? (
+              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
+                <Receipt className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                <p className="text-gray-600 mb-3 sm:mb-4">No purchases yet</p>
+                <p className="text-xs sm:text-sm text-gray-500 mb-4">
+                  Purchase study materials to see them here
+                </p>
+                <Link href="/materials">
+                  <Button className="bg-green-600 hover:bg-green-700">
+                    Browse Materials
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {purchases.map((purchase) => (
+                  <div key={purchase.id} className="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4 border-green-500">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-start gap-4">
+                          {purchase.materials?.thumbnail_url && (
+                            <img
+                              src={purchase.materials.thumbnail_url}
+                              alt={purchase.materials.title}
+                              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
+                              {purchase.materials?.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                              {purchase.materials?.description}
+                            </p>
+                            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500">
+                              <span className="flex items-center gap-1">
+                                <Book className="w-4 h-4" />
+                                {purchase.materials?.subject} {purchase.materials?.class && `- ${purchase.materials.class}`}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-4 h-4" />
+                                Purchased: {formatDate(purchase.created_at)}
+                              </span>
+                              {purchase.last_downloaded && (
+                                <span className="flex items-center gap-1">
+                                  <Download className="w-4 h-4" />
+                                  Last downloaded: {formatDate(purchase.last_downloaded)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3 lg:flex-col lg:items-end">
+                        <div className="text-right">
+                          <p className="text-lg sm:text-xl font-bold text-gray-900 flex items-center justify-end gap-1">
+                            <IndianRupee className="w-4 h-4" />
+                            {purchase.amount / 100}
+                          </p>
+                          <p className="text-xs sm:text-sm text-gray-500">
+                            Transaction: {purchase.payments?.transaction_id?.slice(-8)}
+                          </p>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => handleDownload(purchase.materials)}
+                            className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+                            size="sm"
+                          >
+                            <Download className="w-4 h-4" />
+                            Download
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-2"
+                            onClick={() => {
+                              // Show receipt modal or details
+                              toast.info('Receipt feature coming soon!')
+                            }}
+                          >
+                            <Receipt className="w-4 h-4" />
+                            Receipt
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Quick Actions */}
+      {/* Basic Dashboard Section */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Quick Actions</h2>
-            
-            <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-              {/* Study Materials Card */}
-              <Link href="/materials">
-                <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg p-6 sm:p-8 text-white hover:shadow-xl transition cursor-pointer">
-                  <Book className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4" />
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Study Materials</h3>
-                  <p className="mb-3 sm:mb-4 text-sm sm:text-base">Access comprehensive notes and resources for all subjects</p>
-                  <Button variant="secondary" className="bg-white text-sky-600 hover:bg-gray-100 w-full sm:w-auto">
-                    Browse Materials →
-                  </Button>
-                </div>
-              </Link>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Basic Dashboard</h2>
+              <p className="text-gray-600">Your learning progress and quick actions</p>
+            </div>
 
-              {/* Practice Tests Card */}
-              <Link href="/tests">
-                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 sm:p-8 text-white hover:shadow-xl transition cursor-pointer">
-                  <Target className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4" />
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Practice Tests</h3>
-                  <p className="mb-3 sm:mb-4 text-sm sm:text-base">Take mock tests and improve your exam performance</p>
-                  <Button variant="secondary" className="bg-white text-green-600 hover:bg-gray-100 w-full sm:w-auto">
-                    Start Testing →
-                  </Button>
-                </div>
-              </Link>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
+              <div className="bg-sky-50 rounded-lg p-4 sm:p-6 text-center">
+                <Book className="w-6 h-6 sm:w-8 sm:h-8 text-sky-600 mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">4</div>
+                <div className="text-xs sm:text-sm text-gray-600">Subjects</div>
+              </div>
+              <div className="bg-green-50 rounded-lg p-4 sm:p-6 text-center">
+                <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">0</div>
+                <div className="text-xs sm:text-sm text-gray-600">Tests Taken</div>
+              </div>
+              <div className="bg-yellow-50 rounded-lg p-4 sm:p-6 text-center">
+                <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">0h</div>
+                <div className="text-xs sm:text-sm text-gray-600">Study Time</div>
+              </div>
+              <div className="bg-purple-50 rounded-lg p-4 sm:p-6 text-center">
+                <Award className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">0%</div>
+                <div className="text-xs sm:text-sm text-gray-600">Avg Score</div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mb-8 sm:mb-12">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Quick Actions</h3>
+
+              <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+                {/* Study Materials Card */}
+                <Link href="/materials">
+                  <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg p-6 sm:p-8 text-white hover:shadow-xl transition cursor-pointer">
+                    <Book className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4" />
+                    <h4 className="text-xl sm:text-2xl font-bold mb-2">Study Materials</h4>
+                    <p className="mb-3 sm:mb-4 text-sm sm:text-base">Access comprehensive notes and resources for all subjects</p>
+                    <Button variant="secondary" className="bg-white text-sky-600 hover:bg-gray-100 w-full sm:w-auto">
+                      Browse Materials →
+                    </Button>
+                  </div>
+                </Link>
+
+                {/* Practice Tests Card */}
+                <Link href="/tests">
+                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 sm:p-8 text-white hover:shadow-xl transition cursor-pointer">
+                    <Target className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4" />
+                    <h4 className="text-xl sm:text-2xl font-bold mb-2">Practice Tests</h4>
+                    <p className="mb-3 sm:mb-4 text-sm sm:text-base">Take mock tests and improve your exam performance</p>
+                    <Button variant="secondary" className="bg-white text-green-600 hover:bg-gray-100 w-full sm:w-auto">
+                      Start Testing →
+                    </Button>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -137,7 +347,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Recent Activity</h2>
-            
+
             <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
               <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
               <p className="text-gray-600 mb-3 sm:mb-4">No recent activity yet</p>
@@ -154,7 +364,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
-            
+
             <div className="bg-white rounded-lg shadow p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>

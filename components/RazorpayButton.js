@@ -140,10 +140,10 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
             }
 
             toast.success('✅ Download access granted!')
-            console.log('Reloading page to show download button...')
-            
-            // Reload page immediately to update UI with purchase access
-            window.location.reload()
+            console.log('Redirecting to dashboard to show purchase...')
+
+            // Redirect to dashboard to show the purchase in My Purchases section
+            window.location.href = '/dashboard'
           } catch (error) {
             console.error('Payment verification error:', error)
             toast.error(error.message || 'Payment verification failed')
