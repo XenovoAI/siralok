@@ -1,12 +1,15 @@
-# TODO: Fetch Real Users in Admin Dashboard
+# TODO: Implement Download History System
 
 ## Tasks
-- [x] Import supabaseAdmin in app/admin/page.js
-- [x] Update loadStats function to fetch real user count using supabaseAdmin.auth.admin.listUsers()
-- [x] Test the admin dashboard to verify user count displays correctly
+- [ ] Create new API endpoint `/api/user/download-history/route.js` to fetch user's download history from material_downloads table
+- [ ] Update dashboard page to include "Download History" section showing all downloads (free + paid)
+- [ ] Add filtering/sorting options for download history (by date, subject, type)
+- [ ] Display download timestamps, material details, and types in the dashboard
+- [ ] Test the new API endpoint and verify download history displays correctly
+- [ ] Add pagination if needed for large download histories
 
 ## Status
 - [x] Plan approved by user
-- [x] Implementation in progress
-- [x] Implementation completed
-- [x] Testing completed successfully
+- [ ] Implementation in progress
+- [ ] Implementation completed
+- [ ] Testing completed successfully
