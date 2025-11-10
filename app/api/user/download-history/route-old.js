@@ -32,30 +32,24 @@ export async function GET(request) {
         material_id,
         material_title,
         material_type,
-        downloaded_at
+        downloaded_at,
+        materials (
+          id,
+          title,
+          description,
+          subject,
+          class,
+          thumbnail_url,
+          is_free,
+          price
+        )
       `)
       .eq('user_id', user.id)
       .order('downloaded_at', { ascending: false })
 
     if (error) throw error
 
-    // Get material details for each download
-    const downloadsWithMaterials = await Promise.all(
-      (downloads || []).map(async (download) => {
-        const { data: material } = await supabase
-          .from('materials')
-          .select('id, title, description, subject, class, thumbnail_url, is_free, price, pdf_url')
-          .eq('id', download.material_id)
-          .single()
-
-        return {
-          ...download,
-          materials: material || null
-        }
-      })
-    )
-
-    return NextResponse.json(downloadsWithMaterials)
+    return NextResponse.json(downloads || [])
   } catch (error) {
     console.error('Error fetching download history:', error)
     return NextResponse.json(

@@ -193,90 +193,6 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Download History Section - Moved to Top */}
-      <section className="py-8 sm:py-12 bg-gradient-to-b from-blue-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Download History</h2>
-              <p className="text-gray-600">Your downloaded study materials and resources</p>
-            </div>
-
-            {downloadHistoryLoading ? (
-              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading download history...</p>
-              </div>
-            ) : downloadHistory.length === 0 ? (
-              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
-                <Download className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
-                <p className="text-gray-600 mb-3 sm:mb-4">No downloads yet</p>
-                <p className="text-xs sm:text-sm text-gray-500">
-                  Download study materials to see your history here
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {downloadHistory.map((download) => (
-                  <div key={download.id} className="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4 border-blue-500">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start gap-4">
-                          {download.materials?.thumbnail_url && (
-                            <img
-                              src={download.materials.thumbnail_url}
-                              alt={download.material_title}
-                              className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg flex-shrink-0"
-                            />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
-                              {download.material_title}
-                            </h3>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {download.materials?.description}
-                            </p>
-                            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500">
-                              <span className="flex items-center gap-1">
-                                <Book className="w-4 h-4" />
-                                {download.materials?.subject} {download.materials?.class && `- ${download.materials.class}`}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                Downloaded: {formatDate(download.downloaded_at)}
-                              </span>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                download.material_type === 'paid'
-                                  ? 'bg-green-100 text-green-600'
-                                  : 'bg-blue-100 text-blue-600'
-                              }`}>
-                                {download.material_type === 'paid' ? 'Paid' : 'Free'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={() => handleDownload(download.materials)}
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-2"
-                        >
-                          <Download className="w-4 h-4" />
-                          Download Again
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* My Purchases Section */}
       <section className="py-8 sm:py-12 bg-gradient-to-b from-green-50 to-white">
         <div className="container mx-auto px-4">
@@ -451,6 +367,87 @@ export default function DashboardPage() {
                 </Link>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Download History Section */}
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Download History</h2>
+
+            {downloadHistoryLoading ? (
+              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading download history...</p>
+              </div>
+            ) : downloadHistory.length === 0 ? (
+              <div className="bg-white rounded-lg shadow p-6 sm:p-8 text-center">
+                <Download className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                <p className="text-gray-600 mb-3 sm:mb-4">No downloads yet</p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Download study materials to see your history here
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {downloadHistory.map((download) => (
+                  <div key={download.id} className="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4 border-sky-500">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-start gap-4">
+                          {download.materials?.thumbnail_url && (
+                            <img
+                              src={download.materials.thumbnail_url}
+                              alt={download.material_title}
+                              className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
+                              {download.material_title}
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                              {download.materials?.description}
+                            </p>
+                            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500">
+                              <span className="flex items-center gap-1">
+                                <Book className="w-4 h-4" />
+                                {download.materials?.subject} {download.materials?.class && `- ${download.materials.class}`}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-4 h-4" />
+                                Downloaded: {formatDate(download.downloaded_at)}
+                              </span>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                download.material_type === 'paid'
+                                  ? 'bg-green-100 text-green-600'
+                                  : 'bg-blue-100 text-blue-600'
+                              }`}>
+                                {download.material_type === 'paid' ? 'Paid' : 'Free'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleDownload(download.materials)}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download Again
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
