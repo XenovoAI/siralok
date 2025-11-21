@@ -154,11 +154,12 @@ export default function MaterialsPage() {
     return hasPurchased
   }
 
-  const handleDownload = async (material) => {
+  const handleDownload = async (material, skipAuthCheck = false) => {
     // ============ AUTHENTICATION CHECK (Both Free & Paid) ============
-    if (!user) {
+    if (!user && !skipAuthCheck) {
       setPendingAction({ type: 'download', material })
       setShowAuthModal(true)
+      toast.info('Please login to download materials')
       return
     }
 
@@ -294,11 +295,12 @@ export default function MaterialsPage() {
     }
   }
 
-  const handleView = (material) => {
+  const handleView = (material, skipAuthCheck = false) => {
     // ============ AUTHENTICATION CHECK (Both Free & Paid) ============
-    if (!user) {
+    if (!user && !skipAuthCheck) {
       setPendingAction({ type: 'view', material })
       setShowAuthModal(true)
+      toast.info('Please login to view materials')
       return
     }
 
@@ -384,49 +386,15 @@ export default function MaterialsPage() {
         onSuccess={handleAuthSuccess}
       />
 
-      {/* Hero Section - Enhanced */}
-      <section className="relative py-16 bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-600 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
-
+      {/* Hero Section - Compact */}
+      <section className="relative py-8 bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-600 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 border border-white/30">
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm font-medium">1000+ Study Materials Available</span>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
               Premium Study Materials
               <br />
               <span className="text-sky-200">for JEE & NEET</span>
             </h1>
-
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Access comprehensive study materials, detailed notes, and quality books curated by experts
-            </p>
-
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 mb-10">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">1000+</div>
-                <div className="text-sm text-white/80">Study Materials</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">50K+</div>
-                <div className="text-sm text-white/80">Students</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">95%</div>
-                <div className="text-sm text-white/80">Success Rate</div>
-              </div>
-            </div>
 
             {/* Search Bar - Mobile Optimized */}
             <div className="w-full max-w-2xl mx-auto px-4">
@@ -454,25 +422,25 @@ export default function MaterialsPage() {
 
         {/* Wave divider */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 80C1200 80 1320 70 1380 65L1440 60V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 60L60 50C120 40 240 20 360 15C480 10 600 20 720 25C840 30 960 30 1080 25C1200 20 1320 10 1380 5L1440 0V60H1380C1320 60 1200 60 1080 60C960 60 840 60 720 60C600 60 480 60 360 60C240 60 120 60 60 60H0Z" fill="white"/>
           </svg>
         </div>
       </section>
 
-      {/* Filter Section - Mobile Optimized */}
-      <section className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 py-6 shadow-sm">
+      {/* Filter Section - Ultra Compact */}
+      <section className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 py-2 shadow-sm">
         <div className="container mx-auto px-4">
           {/* Class Filter - Horizontal Scroll */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Class</h3>
+          <div className="mb-2">
+            <h3 className="text-xs font-semibold text-gray-700 mb-1 text-center">Filter by Class</h3>
             <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex gap-3 pb-2 min-w-max px-4">
+              <div className="flex gap-1.5 pb-1 min-w-max px-4">
                 {classes.map((classItem) => (
                   <button
                     key={classItem}
                     onClick={() => setSelectedClass(classItem)}
-                    className={`px-6 py-3 min-h-[50px] rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
+                    className={`px-3 py-1.5 min-h-[32px] rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
                       selectedClass === classItem
                         ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white scale-105 shadow-lg'
                         : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
@@ -487,14 +455,14 @@ export default function MaterialsPage() {
 
           {/* Subject Filter - Horizontal Scroll */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Filter by Subject</h3>
+            <h3 className="text-xs font-semibold text-gray-700 mb-1 text-center">Filter by Subject</h3>
             <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex gap-3 pb-2 min-w-max px-4">
+              <div className="flex gap-1.5 pb-1 min-w-max px-4">
                 {subjects.map((subject) => (
                   <button
                     key={subject}
                     onClick={() => setSelectedSubject(subject)}
-                    className={`px-6 py-3 min-h-[50px] rounded-full font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
+                    className={`px-3 py-1.5 min-h-[32px] rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap ${
                       selectedSubject === subject
                         ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white scale-105 shadow-lg'
                         : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'

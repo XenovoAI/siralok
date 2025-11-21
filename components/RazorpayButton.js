@@ -140,10 +140,15 @@ export default function RazorpayButton({ material, onSuccess, disabled = false }
             }
 
             toast.success('✅ Download access granted!')
-            console.log('Redirecting to dashboard to show purchase...')
+            console.log('Material unlocked successfully')
 
-            // Redirect to dashboard to show the purchase in My Purchases section
-            window.location.href = '/dashboard'
+            // Call onSuccess callback to refresh purchased materials
+            if (onSuccess) {
+              onSuccess()
+            }
+
+            // Stay on current page instead of redirecting
+            // Users can now immediately download the material
           } catch (error) {
             console.error('Payment verification error:', error)
             toast.error(error.message || 'Payment verification failed')

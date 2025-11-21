@@ -7,11 +7,14 @@ import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
+import { useAuth } from '@/contexts/AuthContext'
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { signInWithGoogle } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [returnUrl, setReturnUrl] = useState('/')
   const [formData, setFormData] = useState({
@@ -73,7 +76,7 @@ function LoginForm() {
       if (error) throw error
 
       toast.success('Login successful! Welcome back!')
-      
+
       // Redirect to returnUrl or dashboard
       router.push(returnUrl !== '/' ? returnUrl : '/dashboard')
     } catch (error) {
@@ -81,6 +84,19 @@ function LoginForm() {
       toast.error('Invalid email or password')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true)
+    try {
+      await signInWithGoogle()
+      // OAuth will redirect, no need to handle success here
+    } catch (error) {
+      console.error('Google login error:', error)
+      toast.error('Failed to login with Google')
+    } finally {
+      setGoogleLoading(false)
     }
   }
 
