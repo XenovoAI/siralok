@@ -95,6 +95,26 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const signInWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      })
+
+      if (error) throw error
+
+      // OAuth will redirect, so we don't need to handle success here
+      return { success: true }
+    } catch (error) {
+      console.error('Google login error:', error)
+      toast.error(error.message || 'Failed to login with Google')
+      return { success: false, error }
+    }
+  }
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -159,6 +179,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
     resetPassword,
     updateProfile,
