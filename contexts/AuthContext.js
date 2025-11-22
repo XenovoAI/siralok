@@ -97,11 +97,16 @@ export const AuthProvider = ({ children }) => {
 
   const signInWithGoogle = async () => {
     try {
+      const redirectUrl =
+        process.env.NODE_ENV === 'production'
+          ? 'https://www.sircbse.com/auth/callback'
+          : `${window.location.origin}/auth/callback`
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
+          redirectTo: redirectUrl,
+        },
       })
 
       if (error) throw error
